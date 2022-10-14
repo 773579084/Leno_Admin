@@ -1,0 +1,37 @@
+@import '@/style/variables.scss';
+
+.site-layout-background {
+  background: #fff;
+
+  :global {
+
+    .ant-layout-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px!important;
+      background-color: $themeHeaderColor!important;
+
+      .anticon {
+        margin-left: 16px;
+        color: white;
+      }
+
+      @mixin header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .header-left,.header-right {
+        @include header;
+      }
+
+      .ant-avatar {
+        margin-right: 16px;
+        cursor: pointer;
+        border: 1px solid #000;
+      }
+    }
+  }
+}
