@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 /* ant */
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Form, message, Input } from 'antd'
@@ -11,7 +11,7 @@ const RegisterForm = (props: any) => {
   const [form] = Form.useForm()
 
   // props
-  const { changeIsLogin } = props
+  const { changeIsLogin, registerList } = props
 
   //#region  register
   const onFinish = async (data: ILogin) => {
@@ -22,13 +22,16 @@ const RegisterForm = (props: any) => {
       return
     }
 
-    const res = await registerAPI({ user_name: data.user_name, password: data.password })
-
-    if (res && res.data.code === 0) {
+    try {
+      const res = await registerAPI({ user_name: data.user_name, password: data.password })
       message.success(res.data.message)
-      changeIsLogin({ user_name: data.user_name, password: data.password })
-    } else {
-      res && message.error(res.data.message)
+      changeIsLogin({ user_name: data.user_name, password: data.password }, 'regOk')
+      // 注册成功后清空 registerList 的值
+      changeIsLogin({ user_name: '', password: '', password2: '' }, 'reg')
+    } catch (error) {
+      // 注册失败后清空 registerList 的值
+      changeIsLogin({ user_name: '', password: '', password2: '' }, 'regErr')
+      form.resetFields()
     }
   }
 
@@ -37,11 +40,21 @@ const RegisterForm = (props: any) => {
   }
   //#endregion
 
+  const changeIsLoginFn = () => {
+    const completeRegisterList = form.getFieldsValue()
+    changeIsLogin(completeRegisterList, 'reg')
+  }
+
   return (
     <Form
       form={form}
       name="normal_login"
       className={classes['login-form']}
+      initialValues={{
+        user_name: registerList.user_name,
+        password: registerList.password,
+        password2: registerList.password2,
+      }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
@@ -55,13 +68,13 @@ const RegisterForm = (props: any) => {
             min: 4,
             max: 11,
             required: true,
-            message: '请输入4~11位账号!',
+            message: '请输入4~11位只包含数字字母的账号!',
           },
         ]}
       >
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder="账号: 请输入4~11位"
+          placeholder="账号: 请输入4~11位只包含数字字母的账号"
         />
       </Form.Item>
       <Form.Item
@@ -112,7 +125,7 @@ const RegisterForm = (props: any) => {
           注册
         </Button>
         <div style={{ flex: 1 }}>
-          <a onClick={() => changeIsLogin()} style={{ float: 'right' }}>
+          <a onClick={() => changeIsLoginFn()} style={{ float: 'right' }}>
             去登录
           </a>
         </div>

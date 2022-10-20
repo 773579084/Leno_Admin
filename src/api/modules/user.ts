@@ -13,5 +13,5 @@ export const registerAPI = (data: ILogin) => {
 
 // 获取用户信息
 export const getUserAPI = () => {
-  return http('GET', '/userInfo')
+  return http('GET', '/user/profile/userInfo')
 }

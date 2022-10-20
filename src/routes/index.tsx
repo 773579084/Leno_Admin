@@ -5,13 +5,18 @@ import { useRoutes } from 'react-router-dom'
 import Home from './modules/home'
 import Test from './modules/test'
 import Test2 from './modules/test2'
+import User from './modules/user'
 
 /* 路由页面 */
 import Login from '@/views/login'
 import Page404 from '@/views/errMessage/404'
 import Page500 from '@/views/errMessage/500'
 
-export const commentRoutes = [Home, Test, Test2]
+/**
+ *  commentRoutes 的路由才会出现在侧边栏，主干上的路由并不会出现在侧边栏上
+ * 面包屑和tabs都只会遍历 commentRoutes
+ */
+export const commentRoutes = [Home, Test, Test2, User]
 
 /**
  * 路由配置项

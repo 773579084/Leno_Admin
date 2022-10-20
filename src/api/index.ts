@@ -1,12 +1,13 @@
 import axios, { type Method } from 'axios'
-import { checkStatus } from './helper/checkStatus'
 import NProgress from './nprogress'
 import useStore from '@/store'
 import { baseUrlFn } from '@/utils'
+import { message } from 'antd'
 
 // control global serve loading
 const {
   useGlobalStore: { changeIsLoading },
+  useUserStore,
 } = useStore()
 
 // 请求基地址
@@ -21,9 +22,9 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // 又token配置请求头
-    // if(token&&config.headers){
-    //   config.headers.Authorization = token
-    // }
+    if (useUserStore.token && config.headers) {
+      config.headers.Authorization = 'Bearer ' + useUserStore.token
+    }
     changeIsLoading(true)
     NProgress.start()
     return config
@@ -44,6 +45,8 @@ instance.interceptors.response.use(
     return response
   },
   function (error) {
+    console.log(48, error)
+
     NProgress.done()
     changeIsLoading(false)
     // 对响应错误做点什么
@@ -53,7 +56,7 @@ instance.interceptors.response.use(
     } else {
       // 对响应错误做点什么 400 401 404 500 ...
       // 通用错误，通用提示
-      checkStatus(error.response.status, error.response.data.message)
+      message.error(error.response.data.code + ' ' + error.response.data.message)
     }
     return
   },

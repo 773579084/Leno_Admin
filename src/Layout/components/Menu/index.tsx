@@ -64,32 +64,36 @@ const MenuCom = () => {
 
     commentRoutes.forEach((route: IRoute) => {
       if (route.alwaysShow || isAlwaysShow) {
-        // 多级目录
-        let frontPath: string = ''
-        if (!onPath) {
-          frontPath = route.path as string
-        } else {
-          frontPath = onPath + '/' + route.path
-        }
-        newItems.push(
-          getItem(
-            route.meta?.title,
-            frontPath,
-            route.meta?.icon && iconObj[route.meta?.icon],
-            route.children && createMenuFn(route.children as any, true, frontPath),
-          ),
-        )
-      } else {
-        // 单级目录
-        route.children?.forEach((route2: IRoute) => {
+        if (!route.hidden) {
+          // 多级目录
+          let frontPath: string = ''
+          if (!onPath) {
+            frontPath = route.path as string
+          } else {
+            frontPath = onPath + '/' + route.path
+          }
           newItems.push(
             getItem(
-              route2.meta?.title,
-              route2.path as string,
-              iconObj[route2.meta?.icon as string],
+              route.meta?.title,
+              frontPath,
+              route.meta?.icon && iconObj[route.meta?.icon],
+              route.children && createMenuFn(route.children as any, true, frontPath),
             ),
           )
-        })
+        }
+      } else {
+        // 单级目录
+        if (!route.hidden) {
+          route.children?.forEach((route2: IRoute) => {
+            newItems.push(
+              getItem(
+                route2.meta?.title,
+                route2.path as string,
+                iconObj[route2.meta?.icon as string],
+              ),
+            )
+          })
+        }
       }
     })
     return newItems

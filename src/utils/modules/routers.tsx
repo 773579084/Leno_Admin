@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation, Navigate } from 'react-router-dom'
-import rootRouter from '@/routes'
 import { getUserAPI } from '@/api/modules/user'
+import { IuserInfo } from '@/type'
 // mobx
 import useStore from '@/store'
 
@@ -29,11 +29,12 @@ export const AuthRouter = (props: any) => {
     } else {
       // 第三步 判断是否拿到用户个人信息及权限，没拿到则进行axios请求数据，进行信息存储及权限路由渲染，否则直接放行
       // 该版本为基础版，这些数据展示都为链接，后续会逐步更新
-      if (Object.keys(userInfo).length < 1) {
+      if (Object.keys(userInfo).length < 1 || !userInfo) {
         // 获取用户个人信息 (此处使用 async await会报错)
         getUserAPI()
           .then((res) => {
-            setUserInfo(res.data as any)
+            const { result } = res.data as any
+            setUserInfo(result as IuserInfo)
           })
           .catch((err) => {})
 

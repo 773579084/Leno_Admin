@@ -4,7 +4,7 @@ import { IuserInfo } from '@/type'
 
 export default class useMobxStore {
   token: string | null = null
-  userInfo = {}
+  userInfo = {} as IuserInfo
 
   constructor() {
     // 响应式处理
@@ -15,11 +15,11 @@ export default class useMobxStore {
       properties: ['token'],
       storage: window.localStorage,
     })
-    // makePersistable(this, {
-    //   name: 'LenoAdmin_dev_1.0.0_userInfo',
-    //   properties: ['userInfo'],
-    //   storage: window.localStorage,
-    // })
+    makePersistable(this, {
+      name: 'LenoAdmin_dev_1.0.0_userInfo',
+      properties: ['userInfo'],
+      storage: window.localStorage,
+    })
   }
 
   //#region 处理token

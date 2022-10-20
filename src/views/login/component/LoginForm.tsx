@@ -22,15 +22,12 @@ const LoginForm = (props: any) => {
 
   //#region  login
   const onFinish = async (data: ILogin) => {
-    const res = await loginAPI(data)
-
-    if (res.data.status === 200) {
-      setToken(res.data.token as string)
-      navigate('/')
+    try {
+      const res = await loginAPI(data)
+      setToken(res.data.result?.token as string)
       message.success('登录成功！')
-    } else {
-      message.error(res.data.message)
-    }
+      navigate('/')
+    } catch (error) {}
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -60,7 +57,7 @@ const LoginForm = (props: any) => {
             min: 4,
             max: 11,
             required: true,
-            message: '请输入4~11位账号!',
+            message: '请输入4~11位只包含数字字母的账号!',
           },
         ]}
       >

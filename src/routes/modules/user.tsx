@@ -1,17 +1,18 @@
 import React from 'react'
 import Layout from '@/Layout'
-import Test from '@/views/test2'
+import User from '@/views/user/profile'
 
 export default {
   element: <Layout />,
   path: '',
+  hidden: true,
   children: [
     {
-      path: '/test2',
-      element: <Test />,
+      path: '/user',
+      element: <User />,
+      name: 'user',
       meta: {
-        title: '测试 2',
-        icon: 'test',
+        title: '个人中心',
       },
     },
   ],

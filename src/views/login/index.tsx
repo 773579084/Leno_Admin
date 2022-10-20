@@ -12,11 +12,28 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true)
   const [login, setLogin] = useState({
     user_name: 'admin',
-    password: 123456,
+    password: '12345',
+  } as ILogin)
+  const [registerList, setRegisterList] = useState({
+    user_name: '',
+    password: '',
+    password2: '',
   } as ILogin)
 
-  const changeIsLogin = (data: ILogin) => {
-    setLogin(data) // 将刚刚注册的账号复制给login为默认登录账号
+  const changeIsLogin = (data: ILogin, isStatus: string) => {
+    switch (isStatus) {
+      case 'reg':
+        setRegisterList({ ...data })
+        break
+      case 'regErr':
+        setRegisterList({ ...data })
+        return
+      case 'regOk':
+        setLogin({ ...data })
+        return
+      default:
+        break
+    }
     setIsLogin(!isLogin)
   }
 
@@ -33,7 +50,7 @@ const Login = () => {
           {isLogin ? (
             <LoginForm toggleLogin={isLogin} changeIsLogin={changeIsLogin} loginData={login} />
           ) : (
-            <RegisterForm toggleLogin={isLogin} changeIsLogin={changeIsLogin} />
+            <RegisterForm changeIsLogin={changeIsLogin} registerList={registerList} />
           )}
         </div>
       </div>

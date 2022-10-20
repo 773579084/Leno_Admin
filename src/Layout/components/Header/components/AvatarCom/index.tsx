@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom'
 import avatar from '@/assets/images/avatar.jpeg'
 import useStore from '@/store'
 import { HOME_URL } from '@/config/config'
+import { observer } from 'mobx-react-lite'
+import { baseURL } from '@/api'
 
 const avatarCom = () => {
   const navigate = useNavigate()
   const {
-    useUserStore: { removeToken },
+    useUserStore: { removeToken, removeUserInfo, userInfo },
   } = useStore()
 
   const [visible, setVisible] = useState(false)
@@ -23,6 +25,7 @@ const avatarCom = () => {
       setConfirmLoading(false)
     }, 1000)
     removeToken()
+    removeUserInfo()
     message.success('退出登录成功！')
     navigate('/login')
   }
@@ -36,7 +39,7 @@ const avatarCom = () => {
       items={[
         {
           key: 'name',
-          label: <div style={{ color: '#b2aeae', userSelect: 'none' }}>Wen Chao</div>,
+          label: <div style={{ color: '#b2aeae', userSelect: 'none' }}>{userInfo.user_name}</div>,
           type: 'group',
         },
         {
@@ -50,6 +53,7 @@ const avatarCom = () => {
         {
           key: '2',
           label: <span>个人中心</span>,
+          onClick: () => navigate('/user'),
         },
         {
           key: '3',
@@ -83,7 +87,7 @@ const avatarCom = () => {
         placement="bottomLeft"
         arrow={{ pointAtCenter: true }}
       >
-        <Avatar size="default" src={avatar} />
+        <Avatar size="default" src={userInfo.avatar ? baseURL + '/' + userInfo.avatar : avatar} />
       </Dropdown>
       <Modal
         title="提示"
@@ -102,4 +106,4 @@ const avatarCom = () => {
     </div>
   )
 }
-export default avatarCom
+export default observer(avatarCom)
