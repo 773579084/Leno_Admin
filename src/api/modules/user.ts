@@ -1,5 +1,6 @@
 import { http } from '../index'
-import { ILoginApi, IRegisterApi, ILogin } from '@/type'
+import { ILoginApi, IRegisterApi, ILogin, IProfileAvatar, IGetUserInfoAPI } from '@/type'
+import type { RcFile } from 'antd/es/upload/interface'
 
 // 登录
 export const loginAPI = (data: ILogin) => {
@@ -13,5 +14,10 @@ export const registerAPI = (data: ILogin) => {
 
 // 获取用户信息
 export const getUserAPI = () => {
-  return http('GET', '/user/profile/userInfo')
+  return http<IGetUserInfoAPI>('GET', '/user/profile/userInfo')
+}
+
+// 头像上传
+export const updateAvatarAPI = (data: any) => {
+  return http<IProfileAvatar>('POST', '/user/profile/avatar', data)
 }

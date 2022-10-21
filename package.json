@@ -113,7 +113,9 @@
   },
   "dependencies": {
     "antd": "^4.21.3",
+    "antd-img-crop": "^4.2.8",
     "axios": "^0.27.2",
+    "dayjs": "^1.11.6",
     "echarts": "^5.3.3",
     "mobx": "^6.6.1",
     "mobx-persist-store": "^1.0.6",

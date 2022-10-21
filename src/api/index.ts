@@ -45,8 +45,6 @@ instance.interceptors.response.use(
     return response
   },
   function (error) {
-    console.log(48, error)
-
     NProgress.done()
     changeIsLoading(false)
     // 对响应错误做点什么

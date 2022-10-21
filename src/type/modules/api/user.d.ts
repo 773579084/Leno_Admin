@@ -31,6 +31,12 @@ export interface registerResult {
   user_name: string
 }
 
+export interface IProfileAvatar {
+  code: number
+  message: string
+  result: { avatar_img: string }
+}
+
 // 返回的个人信息
 export interface IuserInfo {
   id?: number
@@ -51,6 +57,21 @@ export interface IuserInfo {
   remark?: string
   iat?: string
   exp?: string
+  createdAt?: string
+}
+
+export interface IGetUserInfoAPI {
+  code: number
+  message: string
+  result: IuserInfo
 }
 
 //#endregion
+
+// props
+export interface IUserProp {
+  nickName?: string
+  phoneNumber?: string
+  email?: string
+  sex?: number
+}
