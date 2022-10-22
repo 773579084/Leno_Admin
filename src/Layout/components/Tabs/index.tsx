@@ -1,5 +1,5 @@
 import { message, Tabs } from 'antd'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect } from 'react'
 const { TabPane } = Tabs
 import { HomeOutlined, CloseOutlined } from '@ant-design/icons'
 import classes from './index.module.scss'
@@ -10,15 +10,15 @@ import { IRoute } from '@/type'
 import DelTabs from './components/DelTabs'
 // mobx
 import useStore from '@/store'
+import { observer } from 'mobx-react-lite'
 
 const TabsCom = () => {
   const {
     useLayoutStore: { defaultObjMobx, changeTabsListMobx },
   } = useStore()
-
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [tabsArr, setTabsArr] = useState(defaultObjMobx.tabsListMobx)
+  const tabsArr = defaultObjMobx.tabsListMobx
 
   //#region  add tabsArr
   useEffect(() => {
@@ -51,8 +51,10 @@ const TabsCom = () => {
             let routePath = item.path?.split('/') as string[]
             if (!routePath[0]) routePath[0] = routePath[1]
             routePath[0] === currentPath &&
-              setTabsArr([...tabsArr, { path: pathname, title: item.meta?.title as string }])
-            changeTabsListMobx([...tabsArr, { path: pathname, title: item.meta?.title as string }])
+              changeTabsListMobx([
+                ...tabsArr,
+                { path: pathname, title: item.meta?.title as string },
+              ])
           }
           //#endregion
           if (item.children) createTab(item)
@@ -84,7 +86,6 @@ const TabsCom = () => {
       newTabs = tabsArr.filter((item) => item.path !== path)
       if (path === pathname) navigate(tabsArr[currentIndex - 1].path)
     }
-    setTabsArr(newTabs)
     changeTabsListMobx(newTabs)
   }
 
@@ -116,4 +117,4 @@ const TabsCom = () => {
   )
 }
 
-export default TabsCom
+export default observer(TabsCom)

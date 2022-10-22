@@ -47,6 +47,6 @@ export interface IDefaultObj {
 }
 
 export interface ITab {
-  path: string
-  title: string
+  path?: string
+  title?: string
 }

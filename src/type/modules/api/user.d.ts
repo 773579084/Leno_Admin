@@ -11,6 +11,13 @@ export interface userPropsType {
   changeIsLogin?: function
 }
 
+// userInfo
+export interface IChangePwd {
+  confirmPwd?: string
+  newPwd?: string
+  oldPwd?: string
+}
+
 //#region  login && registerAPI 接口返回值
 export interface ILoginApi {
   code?: number
@@ -35,6 +42,13 @@ export interface IProfileAvatar {
   code: number
   message: string
   result: { avatar_img: string }
+}
+
+// 改动成功，但是 result 没有任何数据
+export interface IChangeData {
+  code: number
+  message: string
+  result: null
 }
 
 // 返回的个人信息

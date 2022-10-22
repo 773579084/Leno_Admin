@@ -1,5 +1,14 @@
 import { http } from '../index'
-import { ILoginApi, IRegisterApi, ILogin, IProfileAvatar, IGetUserInfoAPI } from '@/type'
+import {
+  ILoginApi,
+  IRegisterApi,
+  ILogin,
+  IProfileAvatar,
+  IGetUserInfoAPI,
+  IChangePwd,
+  IChangeData,
+  IUserProp,
+} from '@/type'
 import type { RcFile } from 'antd/es/upload/interface'
 
 // 登录
@@ -18,6 +27,16 @@ export const getUserAPI = () => {
 }
 
 // 头像上传
-export const updateAvatarAPI = (data: any) => {
+export const updateAvatarAPI = (data: FormData) => {
   return http<IProfileAvatar>('POST', '/user/profile/avatar', data)
+}
+
+// 修改密码
+export const updatePwdAPI = (data: IChangePwd) => {
+  return http<IChangeData>('patch', '/user/profile/updatePwd', data)
+}
+
+// 修改个人基本信息
+export const updateUserInfoAPI = (data: IUserProp) => {
+  return http<IChangeData>('patch', '/user/profile', data)
 }

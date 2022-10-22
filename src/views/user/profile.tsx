@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Card, Upload, message, Tabs } from 'antd'
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
+import type { RcFile } from 'antd/es/upload/interface'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import ImgCrop from 'antd-img-crop'
 import classes from './index.module.scss'
@@ -153,7 +153,7 @@ const Profile = () => {
           <Card title="基本资料" style={{ borderRadius: 5 }}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="基本资料" key="1">
-                <Basics userInfoData={userInfoData} />
+                <Basics />
               </Tabs.TabPane>
               <Tabs.TabPane tab="修改密码" key="2">
                 <ChangePwd />

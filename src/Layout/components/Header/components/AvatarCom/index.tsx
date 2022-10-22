@@ -12,6 +12,7 @@ const avatarCom = () => {
   const navigate = useNavigate()
   const {
     useUserStore: { removeToken, removeUserInfo, userInfo },
+    useLayoutStore: { changeTabsListMobx },
   } = useStore()
 
   const [visible, setVisible] = useState(false)
@@ -26,6 +27,7 @@ const avatarCom = () => {
     }, 1000)
     removeToken()
     removeUserInfo()
+    changeTabsListMobx([{ path: HOME_URL, title: '首页' }])
     message.success('退出登录成功！')
     navigate('/login')
   }
