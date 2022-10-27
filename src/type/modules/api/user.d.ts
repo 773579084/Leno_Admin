@@ -25,7 +25,8 @@ export interface ILoginApi {
   result?: ILoginResult
 }
 export interface ILoginResult {
-  token: string
+  token?: string
+  refreshToken?: string
 }
 
 export interface IRegisterApi {

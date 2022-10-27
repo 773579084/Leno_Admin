@@ -7,11 +7,12 @@ import useStore from '@/store'
 import { HOME_URL } from '@/config/config'
 import { observer } from 'mobx-react-lite'
 import { baseURL } from '@/api'
+import { removeToken, removeRefreshToken } from '@/utils'
 
 const avatarCom = () => {
   const navigate = useNavigate()
   const {
-    useUserStore: { removeToken, removeUserInfo, userInfo },
+    useUserStore: { removeUserInfo, userInfo },
     useLayoutStore: { changeTabsListMobx },
   } = useStore()
 
@@ -26,6 +27,7 @@ const avatarCom = () => {
       setConfirmLoading(false)
     }, 1000)
     removeToken()
+    removeRefreshToken()
     removeUserInfo()
     changeTabsListMobx([{ path: HOME_URL, title: '首页' }])
     message.success('退出登录成功！')

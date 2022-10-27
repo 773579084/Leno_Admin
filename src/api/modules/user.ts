@@ -9,7 +9,6 @@ import {
   IChangeData,
   IUserProp,
 } from '@/type'
-import type { RcFile } from 'antd/es/upload/interface'
 
 // 登录
 export const loginAPI = (data: ILogin) => {

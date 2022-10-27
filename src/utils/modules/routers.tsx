@@ -4,6 +4,7 @@ import { getUserAPI } from '@/api/modules/user'
 import { IuserInfo } from '@/type'
 // mobx
 import useStore from '@/store'
+import { getToken } from '@/utils'
 
 /**
  * @description 递归查询对应的路由
@@ -18,11 +19,11 @@ const whitePaths = ['/login', '/404', '/500']
 export const AuthRouter = (props: any) => {
   const { pathname } = useLocation()
   let {
-    useUserStore: { token, setUserInfo, userInfo },
+    useUserStore: { setUserInfo, userInfo },
   } = useStore()
 
   // 第一步 判断有无 token
-  if (token) {
+  if (getToken()) {
     // 第二步 判断是否前往login页面，等于跳转 '/', 不等于则继续判断
     if (pathname === '/login') {
       return <Navigate to="/" replace />

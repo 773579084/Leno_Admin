@@ -6,16 +6,13 @@ import { Button, Form, message, Input } from 'antd'
 import { loginAPI } from '@/api/modules/user'
 import { ILogin } from '@/type'
 // mobx
-import useStore from '@/store'
 import classes from '../index.module.scss'
+// cookie
+import { setToken, setRefreshToken } from '@/utils'
 
 const LoginForm = (props: any) => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
-
-  const {
-    useUserStore: { setToken },
-  } = useStore()
 
   // props
   const { loginData, changeIsLogin } = props
@@ -25,6 +22,7 @@ const LoginForm = (props: any) => {
     try {
       const res = await loginAPI(data)
       setToken(res.data.result?.token as string)
+      setRefreshToken(res.data.result?.refreshToken as string)
       message.success('登录成功！')
       navigate('/')
     } catch (error) {}

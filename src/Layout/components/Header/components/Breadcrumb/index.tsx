@@ -34,7 +34,6 @@ const BreadcrumbCom = () => {
     commentRoutes.forEach((item) => {
       if (JSON.stringify(item).indexOf(currentPath) !== -1) route = item
     })
-    console.log(37, route)
 
     // 拼接面包屑的路径
     currentBreadArr(route)

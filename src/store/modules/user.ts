@@ -3,7 +3,6 @@ import { makePersistable } from 'mobx-persist-store'
 import { IuserInfo } from '@/type'
 
 export default class useMobxStore {
-  token: string | null = null
   userInfo = {} as IuserInfo
 
   constructor() {
@@ -11,26 +10,13 @@ export default class useMobxStore {
     makeAutoObservable(this)
     // makePersistable 数据持久化存储
     makePersistable(this, {
-      name: 'LenoAdmin_dev_1.0.0_token',
-      properties: ['token'],
-      storage: window.localStorage,
-    })
-    makePersistable(this, {
       name: 'LenoAdmin_dev_1.0.0_userInfo',
       properties: ['userInfo'],
       storage: window.localStorage,
     })
   }
 
-  //#region 处理token
-  // 存储token
-  setToken = (token: string) => {
-    this.token = token
-  }
-  //删除token
-  removeToken = () => {
-    this.token = null
-  }
+  //#region
   // 存储 userinfo
   setUserInfo = (userInfo: IuserInfo) => {
     this.userInfo = userInfo
