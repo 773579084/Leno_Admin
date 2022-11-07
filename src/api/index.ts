@@ -2,7 +2,6 @@ import axios, { type Method } from 'axios'
 import NProgress from './nprogress'
 import useStore from '@/store'
 import { baseUrlFn } from '@/utils'
-import { message } from 'antd'
 import { getToken } from '@/utils'
 import handle401 from './handle401'
 import { Modal } from 'antd'
@@ -56,8 +55,6 @@ instance.interceptors.response.use(
     if (status === 401) {
       return handle401(config)
     } else if (status === 403) {
-      console.log(59)
-
       confirm({
         title: '系统提示',
         content: '登录状态已过期，您可以继续留在该页面，或者重新登录',

@@ -2,6 +2,7 @@ import React from 'react'
 import Home from '@/views/home'
 import { HOME_URL } from '@/config/config'
 import Layout from '@/Layout'
+import lazyLoad from '../utils/lazyLoad'
 
 export default {
   path: '',
@@ -9,7 +10,7 @@ export default {
   children: [
     {
       path: HOME_URL,
-      element: <Home />,
+      element: lazyLoad(React.lazy(() => import('@/views/home'))),
       meta: {
         title: '首页',
         icon: 'home',

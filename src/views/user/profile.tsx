@@ -66,7 +66,6 @@ const Profile = () => {
         setImageUrl(baseURL + '/' + res.data.result.avatar_img)
         // 重新获取 用户的个人信息列表，更行 store中的用户个人信息
         const userRes = await getUserAPI()
-
         setUserInfo(userRes.data.result)
       } catch (error) {}
     } else {

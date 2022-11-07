@@ -1,22 +1,23 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { useRoutes } from 'react-router-dom'
-/* 子路由 */
-import Home from './modules/home'
-import Test from './modules/test'
-import Test2 from './modules/test2'
-import User from './modules/user'
 
-/* 路由页面 */
+/* 主干路由页面 */
+import Layout from '@/Layout'
+import User from '@/views/user/profile'
 import Login from '@/views/login'
 import Page404 from '@/views/errMessage/404'
 import Page500 from '@/views/errMessage/500'
+
+/* 子路由 */
+import Home from './modules/home'
+import Test from './modules/test'
 
 /**
  *  commentRoutes 的路由才会出现在侧边栏，主干上的路由并不会出现在侧边栏上
  * 面包屑和tabs都只会遍历 commentRoutes
  */
-export const commentRoutes = [Home, Test, Test2, User]
+export const commentRoutes = [Home, Test]
 
 /**
  * 路由配置项
@@ -28,6 +29,8 @@ export const commentRoutes = [Home, Test, Test2, User]
  * alwaysShow: true       // 设置该属性为true后，侧边栏就会出现多级嵌套，否则不会出现
  * meta:{
  *   title:'title'        // 设置该路由在侧边栏和面包屑的name
+ *   link:'http'          // 外链地址
+ *   noCache：false       // 是否缓存
  *   icon:'svg-name'      // 设置该路由的图标，对应路径 src/icons/svg
  * }
  */
@@ -43,6 +46,21 @@ export const rootRouter = [
   {
     path: '/',
     element: <Navigate to="/home" />,
+  },
+  {
+    element: <Layout />,
+    path: '',
+    hidden: true,
+    children: [
+      {
+        path: '/user',
+        element: <User />,
+        name: 'user',
+        meta: {
+          title: '个人中心',
+        },
+      },
+    ],
   },
   ...commentRoutes,
   {

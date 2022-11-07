@@ -51,7 +51,7 @@ export default {
         },
         {
           path: 'test12',
-          element: <Test2 />,
+          element: '<Test2 />',
           meta: {
             title: '测试1-2',
           },
