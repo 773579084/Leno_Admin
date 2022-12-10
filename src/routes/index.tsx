@@ -3,8 +3,6 @@ import { Navigate } from 'react-router-dom'
 import { useRoutes } from 'react-router-dom'
 
 /* 主干路由页面 */
-import Layout from '@/Layout'
-import User from '@/views/user/profile'
 import Login from '@/views/login'
 import Page404 from '@/views/errMessage/404'
 import Page500 from '@/views/errMessage/500'

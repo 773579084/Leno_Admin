@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import App from '@/App'
-import '@/style/index.scss'
-import '@/icons'
+import '@/assets/style/index.scss'
+import '@/assets/icons'
 
 const root = document.getElementById('root')
 if (root) {
