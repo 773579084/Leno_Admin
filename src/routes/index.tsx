@@ -11,13 +11,14 @@ import Page500 from '@/views/errMessage/500'
 
 /* 子路由 */
 import Home from './modules/home'
+import UserInfo from './modules/userInfo'
 import Test from './modules/test'
 
 /**
  *  commentRoutes 的路由才会出现在侧边栏，主干上的路由并不会出现在侧边栏上
  * 面包屑和tabs都只会遍历 commentRoutes
  */
-export const commentRoutes = [Home, Test]
+export const commentRoutes = [Home, Test, UserInfo]
 
 /**
  * 路由配置项
@@ -46,21 +47,6 @@ export const rootRouter = [
   {
     path: '/',
     element: <Navigate to="/home" />,
-  },
-  {
-    element: <Layout />,
-    path: '',
-    hidden: true,
-    children: [
-      {
-        path: '/user',
-        element: <User />,
-        name: 'user',
-        meta: {
-          title: '个人中心',
-        },
-      },
-    ],
   },
   ...commentRoutes,
   {
