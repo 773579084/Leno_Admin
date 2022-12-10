@@ -1,4 +1,4 @@
-@import '@/assets/style/variables.scss';
+@import '@/assets/style';
 
 .site-layout-background {
   background: #fff;
@@ -17,14 +17,8 @@
         color: white;
       }
 
-      @mixin header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
       .header-left,.header-right {
-        @include header;
+        @include dis-center;
       }
 
       .ant-avatar {

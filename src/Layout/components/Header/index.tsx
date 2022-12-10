@@ -8,7 +8,7 @@ import classes from './index.module.scss'
 import { PropsType } from '@/type'
 // components
 import AvatarCom from './components/AvatarCom'
-import ScreenFull from './components/ScreenFull'
+import ScreenFull from '@/components/ScreenFull'
 import BreadcrumbCom from './components/Breadcrumb'
 
 const HeaderCom: React.FC<PropsType> = ({ collapsed, setCollapsed }) => {

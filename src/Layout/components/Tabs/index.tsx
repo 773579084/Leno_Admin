@@ -31,7 +31,7 @@ const TabsCom = () => {
     const currentPath = pathname.split('/')[pathname.split('/').length - 1]
 
     commentRoutes.forEach((item) => {
-      if (JSON.stringify(item).indexOf(currentPath) !== -1) route = item
+      if (JSON.stringify(item).indexOf(currentPath) !== -1) route = item as any
     })
 
     // 递归获得 tab
@@ -39,7 +39,7 @@ const TabsCom = () => {
     function createTab(route: IRoute) {
       route.children &&
         route.children.forEach((item) => {
-          //#region this judge tabsArr is exist pathname
+          // 判断当前的pathname
           let isSetTab = false
           tabsArr.forEach((tab) => {
             if (tab.path === pathname) {
@@ -56,7 +56,6 @@ const TabsCom = () => {
                 { path: pathname, title: item.meta?.title as string },
               ])
           }
-          //#endregion
           if (item.children) createTab(item)
         })
     }
@@ -70,7 +69,7 @@ const TabsCom = () => {
 
   // del tab
   const delTabFn = (e: any, path: string, delTabType?: string) => {
-    // if del home ，will prompt
+    // 如果未首页，提示不可删除
     e.stopPropagation()
     let newTabs: any = []
     if (delTabType === 'all') {
@@ -84,7 +83,7 @@ const TabsCom = () => {
       if (path === HOME_URL) return message.warning('首页不可删除！')
       const currentIndex = tabsArr.findIndex((item) => item.path === path)
       newTabs = tabsArr.filter((item) => item.path !== path)
-      if (path === pathname) navigate(tabsArr[currentIndex - 1].path)
+      if (path === pathname) navigate(tabsArr[currentIndex - 1].path as string)
     }
     changeTabsListMobx(newTabs)
   }
@@ -101,7 +100,7 @@ const TabsCom = () => {
                 {item.path !== HOME_URL ? (
                   <CloseOutlined
                     className={classes['del-icon']}
-                    onClick={(e) => delTabFn(e, item.path)}
+                    onClick={(e) => delTabFn(e, item.path as string)}
                   />
                 ) : (
                   ''

@@ -10,7 +10,7 @@ const SvgIcon = (props: {
 }) => {
   const { iconClass, fill, svgClass, click } = props
   return (
-    <i aria-hidden="true" onClick={click}>
+    <i aria-hidden="true" onClick={click} className={`${classes['icon-i']}`}>
       <svg className={`${classes['svg-class']} ${svgClass}`}>
         <use xlinkHref={'#icon-' + iconClass} fill={fill} />
       </svg>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Layout } from 'antd'
 const { Sider } = Layout
 import classes from './index.module.scss'
+import Cookies from 'js-cookie'
 /* 组件 */
 import MenuCom from './components/Menu'
 import HeaderCom from './components/Header'
@@ -10,7 +11,9 @@ import TabsCom from './components/Tabs'
 
 const LayoutCom = () => {
   // control Sider
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(
+    JSON.parse(localStorage.getItem('sider_status') as string),
+  )
 
   // listen window size change
   const listeningWindow = () => {
@@ -27,6 +30,11 @@ const LayoutCom = () => {
   useEffect(() => {
     listeningWindow()
   }, [])
+
+  // sider 状态保持
+  useEffect(() => {
+    localStorage.setItem('sider_status', JSON.stringify(collapsed))
+  }, [collapsed])
 
   return (
     /**

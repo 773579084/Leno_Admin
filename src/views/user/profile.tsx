@@ -16,7 +16,7 @@ import dayjs from 'dayjs'
 import Basics from './component/Basics'
 import ChangePwd from './component/ChangePwd'
 
-//#region  头像上传
+// 头像上传
 const beforeUpload = (file: RcFile) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
   if (!isJpgOrPng) {
@@ -28,7 +28,6 @@ const beforeUpload = (file: RcFile) => {
   }
   return isJpgOrPng && isLt1M
 }
-//#endregion
 
 const Profile = () => {
   const [loading, setLoading] = useState(false)
@@ -72,8 +71,6 @@ const Profile = () => {
       setLoading(true)
     }
   }
-
-  // 基本资料
 
   return (
     <>
