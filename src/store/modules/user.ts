@@ -16,7 +16,6 @@ export default class useMobxStore {
     })
   }
 
-  //#region
   // 存储 userinfo
   setUserInfo = (userInfo: IuserInfo) => {
     this.userInfo = userInfo
@@ -26,5 +25,4 @@ export default class useMobxStore {
   removeUserInfo = () => {
     this.userInfo = {}
   }
-  //#endregion
 }

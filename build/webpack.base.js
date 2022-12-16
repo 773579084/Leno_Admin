@@ -1,7 +1,6 @@
 // webpack.base.js
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -18,27 +17,6 @@ module.exports = {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.scss$/, //匹配所有的 scss 文件
-      //   enforce: 'pre',
-      //   include: [path.resolve(__dirname, '../src')],
-      //   use: [
-      //     isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-      //     'css-loader',
-      //     'postcss-loader',
-      //     'sass-loader'
-      //   ]
-      // },
-      // {
-      //   test: /\.css$/, //匹配所有的 css 文件
-      //   enforce: 'pre',
-      //   include: [path.resolve(__dirname, '../src')],
-      //   use: [
-      //     isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-      //     'css-loader',
-      //     'postcss-loader',
-      //   ]
-      // },
       {
         test: /\.(ts|tsx)$/,
         include: [path.resolve(__dirname, '../src')],

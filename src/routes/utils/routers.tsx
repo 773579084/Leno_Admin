@@ -38,7 +38,6 @@ export const AuthRouter = (props: any) => {
             setUserInfo(result as IuserInfo)
           })
           .catch((err) => {})
-
         // 合并路由
         return props.children
       } else {
