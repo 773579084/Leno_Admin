@@ -25,7 +25,9 @@ const LoginForm = (props: any) => {
       setRefreshToken(res.data.result?.refreshToken as string)
       message.success('登录成功！')
       navigate('/')
-    } catch (error) {}
+    } catch (error) {
+      message.error('登录失败！')
+    }
   }
 
   const onFinishFailed = (errorInfo: any) => {

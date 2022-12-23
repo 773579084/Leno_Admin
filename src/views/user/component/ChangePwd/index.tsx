@@ -30,15 +30,13 @@ const Basics = () => {
   }
 
   const onFinish = async ({ newPwd, oldPwd }: IChangePwd) => {
-    if (oldPwd === newPwd) {
-      message.success('密码修改成功！')
-      return
-    }
     try {
       const res = await updatePwdAPI({ oldPwd, newPwd })
       message.success(res.data.message)
+      form.resetFields()
     } catch (error) {
       message.error('密码修改失败！')
+      form.resetFields()
     }
   }
 

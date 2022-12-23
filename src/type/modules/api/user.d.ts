@@ -35,7 +35,7 @@ export interface IRegisterApi {
   result: registerResult
 }
 export interface registerResult {
-  id: number
+  user_id: number
   user_name: string
 }
 
@@ -54,7 +54,7 @@ export interface IChangeData {
 
 // 返回的个人信息
 export interface IuserInfo {
-  id?: number
+  user_id?: number
   dept_id?: number
   user_name?: string
   nick_name?: string
