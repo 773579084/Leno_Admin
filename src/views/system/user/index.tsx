@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Form, Input, Select, DatePicker, Col, Row, Tooltip, Space, Table, Tag } from 'antd'
+import { Button, Form, Input, Select, DatePicker, Col, Row, Tooltip, Table, Switch } from 'antd'
 import {
   SyncOutlined,
   SearchOutlined,
@@ -9,6 +9,7 @@ import {
   VerticalAlignBottomOutlined,
   ToTopOutlined,
   AppstoreFilled,
+  DoubleRightOutlined,
 } from '@ant-design/icons'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import type { ColumnsType } from 'antd/es/table'
@@ -46,57 +47,82 @@ const User = () => {
   // table
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('checkbox')
 
+  // status btn
+  const onChange = (checked: boolean) => {
+    console.log(`switch to ${checked}`)
+  }
+
   const columns: ColumnsType<DataType> = [
     {
       title: '用户编号',
       dataIndex: 'userId',
       key: 'userId',
+      align: 'center',
     },
     {
       title: '用户名称',
       dataIndex: 'userName',
       key: 'userName',
+      align: 'center',
     },
     {
       title: '用户昵称',
       dataIndex: 'nickName',
       key: 'nickName',
+      align: 'center',
     },
     {
       title: '区域',
       dataIndex: 'deptName',
       key: 'deptName',
+      align: 'center',
     },
     {
       title: '手机号码',
       dataIndex: 'phonenumber',
       key: 'phonenumber',
+      align: 'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
+      align: 'center',
+      render: (_, record) => (
+        <div>
+          <Switch checked={!record.status} onChange={onChange} />
+        </div>
+      ),
     },
     {
       title: '创建时间',
       dataIndex: 'createAt',
       key: 'createAt',
+      align: 'center',
     },
     {
       title: '操作',
       key: 'action',
+      align: 'center',
       render: (_, record) => (
-        <Space size="middle">
-          <a>修改</a>
-          <a>删除</a>
-          <a>更多</a>
-        </Space>
+        <div>
+          <Button size="small" icon={<EditOutlined />} type="link">
+            修改
+          </Button>
+          <Button size="small" icon={<DeleteOutlined />} type="link">
+            删除
+          </Button>
+          <Button size="small" icon={<DoubleRightOutlined />} type="link">
+            更多
+          </Button>
+        </div>
       ),
     },
   ]
 
   const data: DataType[] = [
     {
+      key: 1,
       userId: 1,
       userName: 'admin',
       nickName: '文超',
@@ -121,7 +147,7 @@ const User = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          className="leno-form"
+          className="leno-search"
         >
           <Form.Item label="用户名称" name="roleName">
             <Input style={{ width: 240 }} placeholder="请输入用户名称" allowClear />
@@ -155,30 +181,22 @@ const User = () => {
         <Row gutter={16} className="mb10">
           <Col span={16} className="leno-btn">
             <Row gutter={8}>
-              <Col>
-                <Button type="primary" icon={<PlusOutlined />} ghost>
-                  新增
-                </Button>
+              <Col className="add-btn">
+                <Button icon={<PlusOutlined />}>新增</Button>
               </Col>
               <Col className="change-btn">
-                <Button type="primary" icon={<EditOutlined />} ghost>
-                  修改
-                </Button>
+                <Button icon={<EditOutlined />}>修改</Button>
               </Col>
-              <Col>
-                <Button type="primary" danger icon={<DeleteOutlined />} ghost>
+              <Col className="del-btn">
+                <Button danger icon={<DeleteOutlined />}>
                   删除
                 </Button>
               </Col>
               <Col className="import-btn">
-                <Button type="primary" icon={<ToTopOutlined />} ghost>
-                  导入
-                </Button>
+                <Button icon={<ToTopOutlined />}>导入</Button>
               </Col>
               <Col className="export-btn">
-                <Button type="primary" icon={<VerticalAlignBottomOutlined />} ghost>
-                  导出
-                </Button>
+                <Button icon={<VerticalAlignBottomOutlined />}>导出</Button>
               </Col>
             </Row>
           </Col>
@@ -202,7 +220,7 @@ const User = () => {
             </Row>
           </Col>
         </Row>
-        <div>
+        <div className="leno-table">
           <Table
             rowSelection={{ type: selectionType }}
             columns={columns}
