@@ -79,13 +79,7 @@ const Profile = () => {
           <Card title="个人信息" style={{ borderRadius: 5 }}>
             <ul className={classes['user-info']}>
               <li className={classes['avatar']}>
-                <ImgCrop
-                  modalTitle="编辑图片"
-                  rotate
-                  modalOk="确定"
-                  modalCancel="取消"
-                  onModalOk={(file) => onModalOK(file)}
-                >
+                <ImgCrop rotate onModalOk={(file) => onModalOK(file)}>
                   <Upload
                     name="avatar"
                     listType="picture-card"

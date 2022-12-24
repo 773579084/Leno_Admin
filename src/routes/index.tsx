@@ -10,7 +10,7 @@ import Page500 from '@/views/errMessage/500'
 /* 子路由 */
 import Home from './modules/home'
 import UserInfo from './modules/userInfo'
-import Test from './modules/test'
+import Test from './modules/system'
 
 /**
  *  commentRoutes 的路由才会出现在侧边栏，主干上的路由并不会出现在侧边栏上

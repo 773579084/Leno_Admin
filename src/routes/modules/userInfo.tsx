@@ -1,6 +1,6 @@
 import React from 'react'
 import Layout from '@/Layout'
-import lazyLoad from '../utils/lazyLoad'
+import lazyLoad from '@/routes/utils/lazyLoad'
 
 export default {
   element: <Layout />,
