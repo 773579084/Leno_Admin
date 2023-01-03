@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Form, Input, Select, DatePicker, Col, Row, Tooltip, Table, Switch } from 'antd'
 import {
   SyncOutlined,
@@ -14,6 +14,7 @@ import {
 import type { RangePickerProps } from 'antd/es/date-picker'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
+import { getUserListAPI } from '@/api/modules/sys_user'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -23,6 +24,21 @@ import { DataType } from '@/type'
 
 const User = () => {
   const [form] = Form.useForm()
+  // 分页
+  const [limit, setLimit] = useState({ pageNum: 1, pageSize: 10 })
+  // 用户列表
+  const [userList, setUserList] = useState([])
+
+  // create
+  useEffect(() => {
+    getUserList()
+  }, [])
+
+  // 查询用户列表
+  const getUserList = async () => {
+    const { data } = await getUserListAPI(limit)
+    console.log(30, data)
+  }
 
   //form input
   const onFinish = (values: any) => {
@@ -122,7 +138,6 @@ const User = () => {
 
   const data: DataType[] = [
     {
-      key: 1,
       userId: 1,
       userName: 'admin',
       nickName: '文超',
@@ -225,6 +240,7 @@ const User = () => {
             rowSelection={{ type: selectionType }}
             columns={columns}
             dataSource={data}
+            rowKey="userId"
             pagination={{ pageSize: 10 }}
           />
         </div>
