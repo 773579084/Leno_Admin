@@ -25,9 +25,9 @@ import { DataType } from '@/type'
 const User = () => {
   const [form] = Form.useForm()
   // 分页
-  const [limit, setLimit] = useState({ pageNum: 1, pageSize: 10 })
-  // 用户列表
-  const [userList, setUserList] = useState([])
+  const [queryParams, setQueryParams] = useState({ pageNum: 1, pageSize: 10 })
+  // 用户列表数据
+  const [userList, setUserList] = useState() as any
 
   // create
   useEffect(() => {
@@ -36,8 +36,9 @@ const User = () => {
 
   // 查询用户列表
   const getUserList = async () => {
-    const { data } = await getUserListAPI(limit)
+    const { data } = await getUserListAPI(queryParams)
     console.log(30, data)
+    setUserList(data.result)
   }
 
   //form input
@@ -112,8 +113,8 @@ const User = () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'createAt',
-      key: 'createAt',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       align: 'center',
     },
     {
@@ -136,17 +137,7 @@ const User = () => {
     },
   ]
 
-  const data: DataType[] = [
-    {
-      userId: 1,
-      userName: 'admin',
-      nickName: '文超',
-      deptName: '研发部门',
-      phonenumber: '15013371702',
-      status: 0,
-      createAt: '2022-12-24 08:26:11',
-    },
-  ]
+  const data: DataType[] = userList
 
   return (
     <Row gutter={16}>

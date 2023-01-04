@@ -1,17 +1,11 @@
 import axios, { type Method } from 'axios'
 import NProgress from './nprogress'
-import useStore from '@/store'
 import { baseUrlFn } from '@/utils'
 import { getToken } from '@/utils'
 import handle401 from './handle401'
 import { Modal } from 'antd'
 import { removeToken, removeRefreshToken } from '@/utils'
 const { confirm } = Modal
-
-// control global serve loading
-const {
-  useGlobalStore: { changeIsLoading },
-} = useStore()
 
 // 请求基地址
 export const baseURL = baseUrlFn(process.env.BASE_ENV)
@@ -28,7 +22,6 @@ instance.interceptors.request.use(
     if (!config.headers?.authorization && getToken()) {
       config.headers.Authorization = 'Bearer ' + getToken()
     }
-    changeIsLoading(true)
     NProgress.start()
     return config
   },
@@ -40,16 +33,11 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   function (response) {
-    setTimeout(() => {
-      changeIsLoading(false)
-    }, 300)
-
     NProgress.done()
     return response
   },
   function (error) {
     NProgress.done()
-    changeIsLoading(false)
     const { status, config } = error.response
     // 判断token过期，进行 refresh token
     if (status === 401) {
