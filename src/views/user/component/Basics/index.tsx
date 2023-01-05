@@ -24,7 +24,7 @@ const Basics = () => {
     useLayoutStore: { defaultObjMobx, changeTabsListMobx },
   } = useStore()
   const [user, setUser] = useState({
-    nickName: userInfo.nick_name,
+    nickName: userInfo.nickName,
     phoneNumber: userInfo.phonenumber,
     email: userInfo.email,
     sex: userInfo.sex,
@@ -37,9 +37,7 @@ const Basics = () => {
       // 更新 userInfo 的信息
       const userRes = await getUserAPI()
       setUserInfo(userRes.data.result)
-    } catch (error) {
-      message.error('修改基本资料失败！')
-    }
+    } catch (error) {}
   }
 
   const onClose = () => {
@@ -55,14 +53,14 @@ const Basics = () => {
       name="control-user"
       onFinish={onFinish}
       initialValues={{
-        nick_name: user.nickName,
+        nickName: user.nickName,
         phonenumber: user.phoneNumber,
         email: user.email,
         sex: userInfo.sex ? 1 : 0,
       }}
     >
       <Form.Item
-        name="nick_name"
+        name="nickName"
         label="用户昵称"
         rules={[
           {

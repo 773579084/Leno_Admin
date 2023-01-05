@@ -20,7 +20,7 @@ const { Option } = Select
 const { RangePicker } = DatePicker
 
 // type
-import { DataType } from '@/type'
+import { DataType, userType } from '@/type'
 
 const User = () => {
   const [form] = Form.useForm()
@@ -69,6 +69,12 @@ const User = () => {
     console.log(`switch to ${checked}`)
   }
 
+  // 删除user
+  const delUserFn = (record: userType) => {
+    console.log(74, record)
+  }
+
+  // table columns
   const columns: ColumnsType<DataType> = [
     {
       title: '用户编号',
@@ -79,31 +85,31 @@ const User = () => {
     {
       title: '用户名称',
       dataIndex: 'userName',
-      key: 'userName',
+      key: 'userId',
       align: 'center',
     },
     {
       title: '用户昵称',
       dataIndex: 'nickName',
-      key: 'nickName',
+      key: 'userId',
       align: 'center',
     },
     {
       title: '区域',
-      dataIndex: 'deptName',
-      key: 'deptName',
+      dataIndex: ['dept', 'deptName'],
+      key: 'userId',
       align: 'center',
     },
     {
       title: '手机号码',
       dataIndex: 'phonenumber',
-      key: 'phonenumber',
+      key: 'userId',
       align: 'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'status',
+      key: 'userId',
       align: 'center',
       render: (_, record) => (
         <div>
@@ -114,19 +120,24 @@ const User = () => {
     {
       title: '创建时间',
       dataIndex: 'createdAt',
-      key: 'createdAt',
+      key: 'userId',
       align: 'center',
     },
     {
       title: '操作',
-      key: 'action',
+      key: 'userId',
       align: 'center',
-      render: (_, record) => (
+      render: (record) => (
         <div>
           <Button size="small" icon={<EditOutlined />} type="link">
             修改
           </Button>
-          <Button size="small" icon={<DeleteOutlined />} type="link">
+          <Button
+            size="small"
+            onClick={() => delUserFn(record)}
+            icon={<DeleteOutlined />}
+            type="link"
+          >
             删除
           </Button>
           <Button size="small" icon={<DoubleRightOutlined />} type="link">
@@ -136,7 +147,7 @@ const User = () => {
       ),
     },
   ]
-
+  // table 数据源
   const data: DataType[] = userList
 
   return (

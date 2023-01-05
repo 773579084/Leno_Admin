@@ -43,7 +43,7 @@ const avatarCom = () => {
       items={[
         {
           key: 'name',
-          label: <div style={{ color: '#b2aeae', userSelect: 'none' }}>{userInfo.user_name}</div>,
+          label: <div style={{ color: '#b2aeae', userSelect: 'none' }}>{userInfo.userName}</div>,
           type: 'group',
         },
         {

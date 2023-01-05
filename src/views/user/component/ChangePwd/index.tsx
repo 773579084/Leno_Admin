@@ -35,7 +35,6 @@ const Basics = () => {
       message.success(res.data.message)
       form.resetFields()
     } catch (error) {
-      message.error('密码修改失败！')
       form.resetFields()
     }
   }

@@ -36,7 +36,7 @@ const Profile = () => {
     useUserStore: { userInfo, setUserInfo },
   } = useStore()
   const [userInfoData, setUserInfoData] = useState({
-    nickName: userInfo.nick_name,
+    nickName: userInfo.nickName,
     phoneNumber: userInfo.phonenumber,
     email: userInfo.email,
     sex: userInfo.sex,
@@ -62,7 +62,7 @@ const Profile = () => {
       try {
         const res = await updateAvatarAPI(fd)
         setLoading(false)
-        setImageUrl(baseURL + '/' + res.data.result.avatar_img)
+        setImageUrl(baseURL + '/' + res.data.result.avatarImg)
         // 重新获取 用户的个人信息列表，更行 store中的用户个人信息
         const userRes = await getUserAPI()
         setUserInfo(userRes.data.result)
@@ -99,7 +99,7 @@ const Profile = () => {
                   <SvgIcon iconClass="用户" />
                   <span className={classes['user-string']}>用户名称</span>
                 </div>
-                <div>{userInfo.user_name}</div>
+                <div>{userInfo.userName}</div>
               </li>
               <li>
                 <div>
@@ -120,14 +120,14 @@ const Profile = () => {
                   <SvgIcon iconClass="部门管理" />
                   <span className={classes['user-string']}>所属部门</span>
                 </div>
-                <div>{userInfo.dept_id}</div>
+                <div>{userInfo.deptId}</div>
               </li>
               <li>
                 <div>
                   <SvgIcon iconClass="角色管理" />
                   <span className={classes['user-string']}>所属角色</span>
                 </div>
-                <div>{userInfo.user_type}</div>
+                <div>{userInfo.userType}</div>
               </li>
               <li>
                 <div>

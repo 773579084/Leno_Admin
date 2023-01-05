@@ -11,11 +11,11 @@ const Login = () => {
   // 控制 login 与 register 切换
   const [isLogin, setIsLogin] = useState(true)
   const [login, setLogin] = useState({
-    user_name: 'admin',
+    userName: 'admin',
     password: '12345',
   } as ILogin)
   const [registerList, setRegisterList] = useState({
-    user_name: '',
+    userName: '',
     password: '',
     password2: '',
   } as ILogin)

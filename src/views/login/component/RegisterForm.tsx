@@ -23,14 +23,14 @@ const RegisterForm = (props: any) => {
     }
 
     try {
-      const res = await registerAPI({ user_name: data.user_name, password: data.password })
+      const res = await registerAPI({ userName: data.userName, password: data.password })
       message.success(res.data.message)
-      changeIsLogin({ user_name: data.user_name, password: data.password }, 'regOk')
+      changeIsLogin({ userName: data.userName, password: data.password }, 'regOk')
       // 注册成功后清空 registerList 的值
-      changeIsLogin({ user_name: '', password: '', password2: '' }, 'reg')
+      changeIsLogin({ userName: '', password: '', password2: '' }, 'reg')
     } catch (error) {
       // 注册失败后清空 registerList 的值
-      changeIsLogin({ user_name: '', password: '', password2: '' }, 'regErr')
+      changeIsLogin({ userName: '', password: '', password2: '' }, 'regErr')
       form.resetFields()
     }
   }
@@ -51,7 +51,7 @@ const RegisterForm = (props: any) => {
       name="normal_login"
       className={classes['login-form']}
       initialValues={{
-        user_name: registerList.user_name,
+        userName: registerList.userName,
         password: registerList.password,
         password2: registerList.password2,
       }}
@@ -62,7 +62,7 @@ const RegisterForm = (props: any) => {
         <h3 className={classes['title']}>Register</h3>
       </div>
       <Form.Item
-        name="user_name"
+        name="userName"
         rules={[
           {
             min: 4,

@@ -6,7 +6,7 @@ import {
   IProfileAvatar,
   IGetUserInfoAPI,
   IChangePwd,
-  IChangeData,
+  IsucceeMes,
   IUserProp,
 } from '@/type'
 
@@ -32,10 +32,10 @@ export const updateAvatarAPI = (data: FormData) => {
 
 // 修改密码
 export const updatePwdAPI = (data: IChangePwd) => {
-  return http<IChangeData>('patch', '/user/profile/updatePwd', data)
+  return http<IsucceeMes>('patch', '/user/profile/updatePwd', data)
 }
 
 // 修改个人基本信息
 export const updateUserInfoAPI = (data: IUserProp) => {
-  return http<IChangeData>('patch', '/user/profile', data)
+  return http<IsucceeMes>('patch', '/user/profile', data)
 }

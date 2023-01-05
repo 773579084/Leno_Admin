@@ -3,7 +3,7 @@ import NProgress from './nprogress'
 import { baseUrlFn } from '@/utils'
 import { getToken } from '@/utils'
 import handle401 from './handle401'
-import { Modal } from 'antd'
+import { message, Modal } from 'antd'
 import { removeToken, removeRefreshToken } from '@/utils'
 const { confirm } = Modal
 
@@ -38,7 +38,7 @@ instance.interceptors.response.use(
   },
   function (error) {
     NProgress.done()
-    const { status, config } = error.response
+    const { status, config, data } = error.response
     // 判断token过期，进行 refresh token
     if (status === 401) {
       return handle401(config)
@@ -54,20 +54,11 @@ instance.interceptors.response.use(
           window.location.hash = '/login'
         },
       })
-
+      return
+    } else {
+      message.error(data.code + ': ' + data.message)
       return
     }
-
-    // 对响应错误做点什么
-    if (!error.response) {
-      // 网络错误，response 没有信息
-      window.location.pathname = '/500'
-    } else {
-      // 对响应错误做点什么 400 401 404 500 ...
-      // 通用错误，通用提示
-      // message.error(error.response.data.code + ' ' + error.response.data.message)
-    }
-    return
   },
 )
 

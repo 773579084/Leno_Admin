@@ -24,44 +24,42 @@ export interface IgetUserListAPI {
 
 // 用户信息
 export interface userType {
-  user_id?: number
-  dept_id?: number
-  user_name?: string
-  nick_name?: string
-  user_type?: boolean | number
-  email?: string
-  phonenumber?: number
-  sex?: boolean | number
-  avatar?: string
-  password?: string
-  status?: boolean | number
-  del_flag?: boolean | number
-  login_ip?: string
-  login_date?: string | number
-  create_by?: string
-  update_by?: string
-  remark?: string
-  iat?: string
-  exp?: string
-  createdAt?: string | null
-  updatedAt?: string | null
-  dept?: deptType
+  userId?: number
+  deptid?: number | undefined
+  userName?: string | undefined
+  nickName?: string | undefined
+  userType?: boolean | number | undefined
+  email?: string | undefined
+  phonenumber?: number | undefined
+  sex?: boolean | number | undefined
+  avatar?: string | undefined
+  status?: boolean | number | undefined
+  delFlag?: boolean | number | undefined
+  loginIp?: string | undefined
+  loginDate?: string | number | undefined
+  createBy?: string | undefined
+  updateBy?: string | undefined
+  remark?: string | undefined
+  iat?: string | undefined
+  exp?: string | undefined
+  createdAt?: string | undefined
+  dept?: deptType | undefined
 }
 
 // 部门类型
 export interface deptType {
-  dept_id: string | null
-  parent_id: string | null
+  deptId: string | null
+  parentId: string | null
   ancestors: string | null
-  dept_name: string | null
-  order_num: string | null
+  deptName: string | null
+  orderNum: string | null
   leader: string | null
   phone: string | null
   email: string | null
   status: string | null
-  del_flag: string | null
-  create_by: string | null
-  update_by: string | null
+  delFlag: string | null
+  createBy: string | null
+  updateBy: string | null
   createdAt: string | null
   updatedAt: string | null
 }

@@ -25,9 +25,7 @@ const LoginForm = (props: any) => {
       setRefreshToken(res.data.result?.refreshToken as string)
       message.success('登录成功！')
       navigate('/')
-    } catch (error) {
-      message.error('登录失败！')
-    }
+    } catch (error) {}
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -41,7 +39,7 @@ const LoginForm = (props: any) => {
       name="normal_login"
       className={classes['login-form']}
       initialValues={{
-        user_name: loginData.user_name,
+        userName: loginData.userName,
         password: loginData.password,
       }}
       onFinish={onFinish}
@@ -51,7 +49,7 @@ const LoginForm = (props: any) => {
         <h3 className={classes['title']}>Login</h3>
       </div>
       <Form.Item
-        name="user_name"
+        name="userName"
         rules={[
           {
             min: 4,
