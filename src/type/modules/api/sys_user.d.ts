@@ -19,7 +19,10 @@ export interface ILimitAPI {
 export interface IgetUserListAPI {
   code: number
   message: string
-  result: userType[]
+  result: {
+    count: number
+    rows: userType[]
+  }
 }
 
 // 用户信息

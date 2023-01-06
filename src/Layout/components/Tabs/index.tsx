@@ -88,29 +88,32 @@ const TabsCom = () => {
     changeTabsListMobx(newTabs)
   }
 
+  // 渲染 标签页
+  const items = () => {
+    let tabs = [] as any
+    tabsArr.forEach((item) => {
+      tabs.push({
+        label: (
+          <span>
+            {item.path === HOME_URL ? <HomeOutlined /> : ''}
+            {item.title}
+            {item.path !== HOME_URL ? (
+              <CloseOutlined
+                className={classes['del-icon']}
+                onClick={(e) => delTabFn(e, item.path as string)}
+              />
+            ) : null}
+          </span>
+        ),
+        key: item.path,
+      })
+    })
+    return tabs
+  }
+
   return (
     <div className={classes['layout-tabs']}>
-      <Tabs activeKey={pathname} onChange={navigateFn}>
-        {tabsArr.map((item) => (
-          <TabPane
-            tab={
-              <span>
-                {item.path === HOME_URL ? <HomeOutlined /> : ''}
-                {item.title}
-                {item.path !== HOME_URL ? (
-                  <CloseOutlined
-                    className={classes['del-icon']}
-                    onClick={(e) => delTabFn(e, item.path as string)}
-                  />
-                ) : (
-                  ''
-                )}
-              </span>
-            }
-            key={item.path}
-          ></TabPane>
-        ))}
-      </Tabs>
+      <Tabs activeKey={pathname} onChange={navigateFn} items={items()}></Tabs>
       <DelTabs delTabFn={delTabFn} />
     </div>
   )

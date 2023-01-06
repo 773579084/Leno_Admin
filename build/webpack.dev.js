@@ -1,6 +1,5 @@
 // webpack.dev.js
 const path = require('path')
-const webpack = require('webpack')
 const { merge } = require('webpack-merge')
 const baseConfig = require('./webpack.base.js')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');

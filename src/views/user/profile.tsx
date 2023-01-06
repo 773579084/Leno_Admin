@@ -141,14 +141,21 @@ const Profile = () => {
         </Col>
         <Col span={17}>
           <Card title="基本资料" style={{ borderRadius: 5 }}>
-            <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="基本资料" key="1">
-                <Basics />
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="修改密码" key="2">
-                <ChangePwd />
-              </Tabs.TabPane>
-            </Tabs>
+            <Tabs
+              defaultActiveKey="1"
+              items={[
+                {
+                  label: '基本资料',
+                  key: '1',
+                  children: <Basics />,
+                },
+                {
+                  label: '修改密码',
+                  key: '2',
+                  children: <ChangePwd />,
+                },
+              ]}
+            ></Tabs>
           </Card>
         </Col>
       </Row>

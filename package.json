@@ -108,7 +108,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "antd": "^4.21.3",
+    "antd": "^4.24.5",
     "antd-img-crop": "^4.2.8",
     "axios": "^0.27.2",
     "dayjs": "^1.11.6",

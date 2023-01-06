@@ -7,6 +7,7 @@ import useStore from '@/store'
 import { HOME_URL } from '@/config/config'
 import { observer } from 'mobx-react-lite'
 import { baseURL } from '@/api'
+import type { MenuProps } from 'antd'
 import { removeToken, removeRefreshToken } from '@/utils'
 
 const avatarCom = () => {
@@ -38,56 +39,52 @@ const avatarCom = () => {
 
   const layout = () => setVisible(true)
 
-  const menu = (
-    <Menu
-      items={[
-        {
-          key: 'name',
-          label: <div style={{ color: '#b2aeae', userSelect: 'none' }}>{userInfo.userName}</div>,
-          type: 'group',
-        },
-        {
-          type: 'divider',
-        },
-        {
-          key: '1',
-          label: <span>首页</span>,
-          onClick: () => navigate(HOME_URL),
-        },
-        {
-          key: '2',
-          label: <span>个人中心</span>,
-          onClick: () => navigate('/user'),
-        },
-        {
-          key: '3',
-          label: (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://gitee.com/zhao-wenchao110/eazy-admin"
-            >
-              项目地址
-            </a>
-          ),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          key: '4',
-          label: <span>退出登录</span>,
-          onClick: layout,
-        },
-      ]}
-    />
-  )
+  const items: MenuProps['items'] = [
+    {
+      key: 'name',
+      label: <div style={{ color: '#b2aeae', userSelect: 'none' }}>{userInfo.userName}</div>,
+      type: 'group',
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: '1',
+      label: <span>首页</span>,
+      onClick: () => navigate(HOME_URL),
+    },
+    {
+      key: '2',
+      label: <span>个人中心</span>,
+      onClick: () => navigate('/user'),
+    },
+    {
+      key: '3',
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://gitee.com/zhao-wenchao110/eazy-admin"
+        >
+          项目地址
+        </a>
+      ),
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: '4',
+      label: <span>退出登录</span>,
+      onClick: layout,
+    },
+  ]
 
   return (
     <div style={{ marginLeft: 16 }}>
       <Dropdown
         trigger={['click']}
-        overlay={menu}
+        menu={{ items }}
         placement="bottomLeft"
         arrow={{ pointAtCenter: true }}
       >
@@ -95,7 +92,7 @@ const avatarCom = () => {
       </Dropdown>
       <Modal
         title="提示"
-        visible={visible}
+        open={visible}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}

@@ -7,6 +7,6 @@ export const getUserListAPI = (data: ILimitAPI) => {
 }
 
 // 删除用户
-export function delUser(userId: number) {
+export function delUserAPI(userId: number) {
   return http<IsucceeMes>('DELETE', '/system/user/' + userId)
 }
