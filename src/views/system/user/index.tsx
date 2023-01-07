@@ -13,6 +13,7 @@ import {
   message,
   Pagination,
   Modal,
+  Radio,
 } from 'antd'
 import {
   SyncOutlined,
@@ -33,12 +34,12 @@ import classes from './index.module.scss'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
-
 // type
 import { DataType, userType } from '@/type'
 
 const User: React.FC = () => {
   const [form] = Form.useForm()
+  const { TextArea } = Input
   // 分页
   const [queryParams, setQueryParams] = useState({ pageNum: 1, pageSize: 10 })
   // 用户列表数据
@@ -48,6 +49,8 @@ const User: React.FC = () => {
   // 显隐 添加 编辑 用户
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isTitle, setisTitle] = useState('添加用户')
+  // 添加用户 状态
+  const [value, setValue] = useState(0)
 
   // create
   useEffect(() => {
@@ -213,6 +216,8 @@ const User: React.FC = () => {
         form.setFieldsValue({ note: 'Hi there!' })
     }
   }
+  // 修改状态
+  const onRadioChange = () => {}
   //#endregion
 
   return (
@@ -332,6 +337,7 @@ const User: React.FC = () => {
         >
           <Form
             name="basic"
+            labelCol={{ span: 6 }}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -400,8 +406,27 @@ const User: React.FC = () => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="归属部门" name="password">
-                  <Select placeholder="请选择归属部门" onChange={onAddGenderChange} allowClear>
+                <Form.Item label="状态">
+                  <Radio.Group onChange={onRadioChange} value={value}>
+                    <Radio value={0}> 正常 </Radio>
+                    <Radio value={1}> 停用 </Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="岗位" name="password">
+                  <Select placeholder="请选择岗位" onChange={onAddGenderChange} allowClear>
+                    <Option value="male">male</Option>
+                    <Option value="female">female</Option>
+                    <Option value="other">other</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="角色" name="password">
+                  <Select placeholder="请选择角色" onChange={onAddGenderChange} allowClear>
                     <Option value="male">male</Option>
                     <Option value="female">female</Option>
                     <Option value="other">other</Option>
@@ -409,6 +434,9 @@ const User: React.FC = () => {
                 </Form.Item>
               </Col>
             </Row>
+            <Form.Item labelCol={{ span: 3 }} label="备注">
+              <TextArea placeholder="请输入内容" rows={3} />
+            </Form.Item>
           </Form>
         </Modal>
       </Col>
