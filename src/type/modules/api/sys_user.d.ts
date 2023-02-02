@@ -1,12 +1,12 @@
 // 用户列表
 export interface DataType {
-  userId: string | number
-  userName: string | null
-  nickName: string | null
-  deptName: string | null
-  phonenumber: string | null
-  status: number | null
-  createAt: string | null
+  userId: number
+  userName: string
+  nickName: string
+  deptName: string
+  phonenumber: string
+  status: number
+  createAt: string
 }
 
 // 查询页数
@@ -25,44 +25,67 @@ export interface IgetUserListAPI {
   }
 }
 
+// 查询部门下拉树结构
+export interface Children {
+  key: number
+  title: string
+}
+
+export interface Children {
+  key: number
+  title: string
+  children: Children[]
+}
+
+export interface Result {
+  key: number
+  title: string
+  children: Children[]
+}
+
+export interface IdeptTreeAPI {
+  code: number
+  message: string
+  result: Result[]
+}
+
 // 用户信息
 export interface userType {
   userId?: number
-  deptid?: number | undefined
-  userName?: string | undefined
-  nickName?: string | undefined
-  userType?: boolean | number | undefined
-  email?: string | undefined
-  phonenumber?: number | undefined
-  sex?: boolean | number | undefined
-  avatar?: string | undefined
-  status?: boolean | number | undefined
-  delFlag?: boolean | number | undefined
-  loginIp?: string | undefined
-  loginDate?: string | number | undefined
-  createBy?: string | undefined
-  updateBy?: string | undefined
-  remark?: string | undefined
-  iat?: string | undefined
-  exp?: string | undefined
-  createdAt?: string | undefined
-  dept?: deptType | undefined
+  deptid?: number
+  userName?: string
+  nickName?: string
+  userType?: boolean
+  email?: string
+  phonenumber?: number
+  sex?: boolean
+  avatar?: string
+  status?: boolean
+  delFlag?: boolean
+  loginIp?: string
+  loginDate?: string
+  createBy?: string
+  updateBy?: string
+  remark?: string
+  iat?: string
+  exp?: string
+  createdAt?: string
+  dept?: deptType
 }
 
 // 部门类型
 export interface deptType {
-  deptId: string | null
-  parentId: string | null
-  ancestors: string | null
-  deptName: string | null
-  orderNum: string | null
-  leader: string | null
-  phone: string | null
-  email: string | null
-  status: string | null
-  delFlag: string | null
-  createBy: string | null
-  updateBy: string | null
-  createdAt: string | null
-  updatedAt: string | null
+  deptId: number
+  parentId: number
+  deptName: string
+  orderNum: number
+  leader: string
+  phone: string
+  email: string
+  status: string
+  delFlag: string
+  createBy: string
+  updateBy: string
+  createdAt: string
+  updatedAt: string
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import {
   Button,
   Form,
@@ -12,8 +12,7 @@ import {
   Switch,
   message,
   Pagination,
-  Modal,
-  Radio,
+  Tree,
 } from 'antd'
 import {
   SyncOutlined,
@@ -26,43 +25,144 @@ import {
   AppstoreFilled,
   DoubleRightOutlined,
 } from '@ant-design/icons'
+import type { DataNode } from 'antd/es/tree'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
-import { getUserListAPI, delUserAPI } from '@/api/modules/sys_user'
+import { getUserListAPI, delUserAPI, deptTreeAPI } from '@/api/modules/sys_user'
 import classes from './index.module.scss'
-
-const { Option } = Select
-const { RangePicker } = DatePicker
-// type
+import AddEditUser from './component/AddEditUser'
 import { DataType, userType } from '@/type'
+const { RangePicker } = DatePicker
+
+const dataList: { key: React.Key; title: string }[] = []
 
 const User: React.FC = () => {
+  const { Option } = Select
   const [form] = Form.useForm()
-  const { TextArea } = Input
+  const { Search } = Input
   // 分页
   const [queryParams, setQueryParams] = useState({ pageNum: 1, pageSize: 10 })
   // 用户列表数据
   const [userList, setUserList] = useState({ count: 0, rows: [] as userType[] })
   // 消息提示 message
   const [messageApi, contextHolder] = message.useMessage()
-  // 显隐 添加 编辑 用户
+  // model显隐
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isTitle, setisTitle] = useState('添加用户')
-  // 添加用户 状态
-  const [value, setValue] = useState(0)
+  // true：新增 false：编辑
+  const [isAdd, setIsAdd] = useState(true)
+
+  // left deptTree
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
+  // 搜索值
+  const [searchValue, setSearchValue] = useState('')
+  const [autoExpandParent, setAutoExpandParent] = useState(true)
+  // tree data
+  const [defaultData, setdefaultData] = useState<DataNode[]>([])
 
   // create
   useEffect(() => {
     getUserList()
+    generateData()
   }, [])
+
+  // left deptTree
+  // 生成树状数据
+  const generateData = async () => {
+    const { data } = await deptTreeAPI()
+    setdefaultData([...data.result])
+  }
+
+  // 监听部门数据源结构，改变则重新生成搜索用的扁平数据结构
+  useEffect(() => {
+    dataList.splice(0)
+    generateList(defaultData)
+  }, [defaultData])
+
+  // 生成搜索用的扁平数据结构
+  const generateList = (data: DataNode[]) => {
+    for (let i = 0; i < data.length; i++) {
+      const node = data[i]
+      const { key, title } = node
+      dataList.push({ key, title: title as string })
+      if (node.children) {
+        generateList(node.children)
+      }
+    }
+  }
+
+  const getParentKey = (key: React.Key, tree: DataNode[]): React.Key => {
+    let parentKey: React.Key
+    for (let i = 0; i < tree.length; i++) {
+      const node = tree[i]
+      if (node.children) {
+        if (node.children.some((item) => item.key === key)) {
+          parentKey = node.key
+        } else if (getParentKey(key, node.children)) {
+          parentKey = getParentKey(key, node.children)
+        }
+      }
+    }
+    return parentKey!
+  }
+
+  // 展开
+  const onExpand = (newExpandedKeys: React.Key[]) => {
+    setExpandedKeys(newExpandedKeys)
+    setAutoExpandParent(false)
+  }
+
+  // search输入后触发
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    const newExpandedKeys = dataList
+      .map((item) => {
+        if (item.title.indexOf(value) > -1) {
+          return getParentKey(item.key, defaultData)
+        }
+        return null
+      })
+      .filter((item, i, self) => item && self.indexOf(item) === i)
+    setExpandedKeys(newExpandedKeys as React.Key[])
+    setSearchValue(value)
+    setAutoExpandParent(true)
+  }
+
+  const treeData = useMemo(() => {
+    const loop = (data: DataNode[]): DataNode[] =>
+      data.map((item) => {
+        const strTitle = item.title as string
+        const index = strTitle.indexOf(searchValue)
+        const beforeStr = strTitle.substring(0, index)
+        const afterStr = strTitle.slice(index + searchValue.length)
+        const title =
+          index > -1 ? (
+            <span>
+              {beforeStr}
+              <span className={classes['site-tree-search-value']}>{searchValue}</span>
+              {afterStr}
+            </span>
+          ) : (
+            <span>{strTitle}</span>
+          )
+        if (item.children) {
+          return { title, key: item.key, children: loop(item.children) }
+        }
+
+        return {
+          title,
+          key: item.key,
+        }
+      })
+
+    return loop(defaultData)
+  }, [searchValue, defaultData])
 
   //#region 头部搜索
   // 查询用户列表
   const getUserList = async () => {
     const { data } = await getUserListAPI(queryParams)
-    setUserList(data.result)
-    console.log(57, data)
+    setUserList({ ...data.result })
   }
 
   //搜索栏搜索
@@ -169,7 +269,15 @@ const User: React.FC = () => {
       align: 'center',
       render: (record) => (
         <div>
-          <Button size="small" icon={<EditOutlined />} type="link">
+          <Button
+            onClick={() => {
+              setIsModalOpen(true)
+              setIsAdd(false)
+            }}
+            size="small"
+            icon={<EditOutlined />}
+            type="link"
+          >
             修改
           </Button>
           <Button
@@ -191,41 +299,19 @@ const User: React.FC = () => {
   const data: any = userList.rows
   //#endregion
 
-  //#region 添加 编辑 用户
-  // model 显隐控制
-  const showModal = () => {
-    setIsModalOpen(true)
-    console.log(192, isModalOpen)
-  }
-  const handleOk = () => {
-    setIsModalOpen(false)
-  }
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
-  // 归属部门select
-  const onAddGenderChange = (value: string) => {
-    switch (value) {
-      case 'male':
-        form.setFieldsValue({ note: 'Hi, man!' })
-        return
-      case 'female':
-        form.setFieldsValue({ note: 'Hi, lady!' })
-        return
-      case 'other':
-        form.setFieldsValue({ note: 'Hi there!' })
-    }
-  }
-  // 修改状态
-  const onRadioChange = () => {}
-  //#endregion
+  // model 显隐控制 添加 编辑 用户
 
   return (
     <Row gutter={16} className={classes['sys-user']}>
       {contextHolder}
       <Col span={4}>
-        <Input placeholder="请输入用户名称" prefix={<SearchOutlined />} allowClear />
-        <div>公司部门</div>
+        <Search style={{ marginBottom: 8 }} placeholder="请输入部门名称" onChange={onChange} />
+        <Tree
+          onExpand={onExpand}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
+          treeData={treeData}
+        />
       </Col>
       <Col span={20}>
         <Form
@@ -270,7 +356,12 @@ const User: React.FC = () => {
           <Col span={16} className="leno-btn">
             <Row gutter={8}>
               <Col className="add-btn">
-                <Button icon={<PlusOutlined />} onClick={showModal}>
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    setIsModalOpen(true)
+                  }}
+                >
                   新增
                 </Button>
               </Col>
@@ -324,121 +415,19 @@ const User: React.FC = () => {
             total={userList.count}
             showSizeChanger
             showQuickJumper
+            current={queryParams.pageNum}
             showTotal={(total) => `共 ${total} 条`}
           />
         </div>
         {/* 添加 编辑 用户 */}
-        <Modal
-          title={isTitle}
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          width={700}
-        >
-          <Form
-            name="basic"
-            labelCol={{ span: 6 }}
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="用户昵称"
-                  name="username"
-                  rules={[{ required: true, message: '请输入您的用户昵称!' }]}
-                >
-                  <Input placeholder="请输入用户昵称" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="归属部门" name="password">
-                  <Select placeholder="请选择归属部门" onChange={onAddGenderChange} allowClear>
-                    <Option value="male">male</Option>
-                    <Option value="female">female</Option>
-                    <Option value="other">other</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item label="手机号码" name="username">
-                  <Input placeholder="请输入手机号码" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="邮箱" name="username">
-                  <Input placeholder="请输入邮箱" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="用户名称"
-                  name="username"
-                  rules={[{ required: true, message: '请输入您的用户名称!' }]}
-                >
-                  <Input placeholder="请输入用户名称" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="用户密码"
-                  name="username"
-                  rules={[{ required: true, message: '请输入您的用户密码!' }]}
-                >
-                  <Input placeholder="请输入用户密码" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item label="用户性别" name="password">
-                  <Select placeholder="请选择用户性别" onChange={onAddGenderChange} allowClear>
-                    <Option value="male">male</Option>
-                    <Option value="female">female</Option>
-                    <Option value="other">other</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="状态">
-                  <Radio.Group onChange={onRadioChange} value={value}>
-                    <Radio value={0}> 正常 </Radio>
-                    <Radio value={1}> 停用 </Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item label="岗位" name="password">
-                  <Select placeholder="请选择岗位" onChange={onAddGenderChange} allowClear>
-                    <Option value="male">male</Option>
-                    <Option value="female">female</Option>
-                    <Option value="other">other</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="角色" name="password">
-                  <Select placeholder="请选择角色" onChange={onAddGenderChange} allowClear>
-                    <Option value="male">male</Option>
-                    <Option value="female">female</Option>
-                    <Option value="other">other</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Form.Item labelCol={{ span: 3 }} label="备注">
-              <TextArea placeholder="请输入内容" rows={3} />
-            </Form.Item>
-          </Form>
-        </Modal>
+        <AddEditUser
+          isModalOpen={isModalOpen}
+          isAdd={isAdd}
+          defaultData={defaultData}
+          onCancel={() => {
+            setIsModalOpen(false)
+          }}
+        />
       </Col>
     </Row>
   )
