@@ -29,10 +29,10 @@ import type { DataNode } from 'antd/es/tree'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
-import { getUserListAPI, delUserAPI, deptTreeAPI } from '@/api/modules/sys_user'
+import { getUserListAPI, delUserAPI, deptTreeAPI, getAddUserAPI } from '@/api/modules/sys_user'
 import classes from './index.module.scss'
 import AddEditUser from './component/AddEditUser'
-import { DataType, userType } from '@/type'
+import { DataType, userType, getAddUserResult } from '@/type'
 const { RangePicker } = DatePicker
 
 const dataList: { key: React.Key; title: string }[] = []
@@ -51,6 +51,8 @@ const User: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   // true：新增 false：编辑
   const [isAdd, setIsAdd] = useState(true)
+  // add btn
+  const [postRole, setPostRole] = useState() as any
 
   // left deptTree
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
@@ -188,7 +190,7 @@ const User: React.FC = () => {
   //#endregion
 
   //#region table
-  // table 前列按钮
+  // table 首列按钮
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('checkbox')
 
   // 分页
@@ -299,7 +301,11 @@ const User: React.FC = () => {
   const data: any = userList.rows
   //#endregion
 
-  // model 显隐控制 添加 编辑 用户
+  // btn 功能
+  const getPostRoleFn = async () => {
+    const res = await getAddUserAPI()
+    setPostRole(res.data.result)
+  }
 
   return (
     <Row gutter={16} className={classes['sys-user']}>
@@ -360,6 +366,7 @@ const User: React.FC = () => {
                   icon={<PlusOutlined />}
                   onClick={() => {
                     setIsModalOpen(true)
+                    getPostRoleFn()
                   }}
                 >
                   新增
@@ -424,6 +431,7 @@ const User: React.FC = () => {
           isModalOpen={isModalOpen}
           isAdd={isAdd}
           defaultData={defaultData}
+          postRole={postRole}
           onCancel={() => {
             setIsModalOpen(false)
           }}

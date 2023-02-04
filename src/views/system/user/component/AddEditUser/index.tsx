@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Input, Select, Col, Row, Modal, Radio, TreeSelect } from 'antd'
-import { userType } from '@/type'
+import { userType, getAddUserResult } from '@/type'
 import type { DataNode } from 'antd/es/tree'
 
 export type UserFormValueType = Record<string, unknown> & Partial<userType>
@@ -9,24 +9,27 @@ export type AddEditFormProps = {
   isModalOpen: boolean
   isAdd: boolean
   defaultData: DataNode[]
+  postRole: getAddUserResult
 }
 
 const AddEditUser: React.FC<AddEditFormProps> = (props) => {
   const { Option } = Select
   const { TextArea } = Input
   const [form] = Form.useForm()
+  const { isModalOpen, isAdd, defaultData, postRole } = props
   // 添加用户 状态
   const [value, setValue] = useState(0)
   // 部门选择
   const [treeValue, setTreeValue] = useState<string>('')
 
-  const onChange = (newValue: string) => {
+  const onTreeChange = (newValue: string) => {
     setTreeValue(newValue)
   }
+  const onPostChange = (newValue: string) => {
+    setTreeValue(newValue)
+  }
+  console.log(28, postRole)
 
-  const { isModalOpen, isAdd, defaultData } = props
-
-  //#region 添加 编辑 用户
   const handleOk = () => {
     props.onCancel()
   }
@@ -35,6 +38,8 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
   }
   // 归属部门select
   const onAddGenderChange = (value: string) => {
+    console.log(39, value)
+
     switch (value) {
       case 'male':
         form.setFieldsValue({ note: 'Hi, man!' })
@@ -56,7 +61,6 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
-  //#endregion
 
   return (
     <Modal
@@ -67,6 +71,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
       width={700}
     >
       <Form
+        form={form}
         name="basic"
         labelCol={{ span: 6 }}
         initialValues={{ remember: true }}
@@ -78,7 +83,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
           <Col span={12}>
             <Form.Item
               label="用户昵称"
-              name="username"
+              name="userName"
               rules={[{ required: true, message: '请输入您的用户昵称!' }]}
             >
               <Input placeholder="请输入用户昵称" />
@@ -95,7 +100,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
                 placeholder="请选择归属部门"
                 allowClear
                 treeDefaultExpandAll
-                onChange={onChange}
+                onChange={onTreeChange}
                 treeData={defaultData}
               />
             </Form.Item>
@@ -135,7 +140,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item label="用户性别" name="password">
+            <Form.Item label="用户性别" name="sex">
               <Select placeholder="请选择用户性别" onChange={onAddGenderChange} allowClear>
                 <Option value="male">男</Option>
                 <Option value="female">女</Option>
@@ -154,8 +159,8 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item label="岗位" name="password">
-              <Select placeholder="请选择岗位" onChange={onAddGenderChange} allowClear>
+            <Form.Item label="岗位" name="post">
+              <Select placeholder="请选择岗位" onChange={onPostChange} allowClear>
                 <Option value="male">male</Option>
                 <Option value="female">female</Option>
                 <Option value="other">other</Option>
@@ -163,7 +168,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="角色" name="password">
+            <Form.Item label="角色" name="role">
               <Select placeholder="请选择角色" onChange={onAddGenderChange} allowClear>
                 <Option value="male">male</Option>
                 <Option value="female">female</Option>

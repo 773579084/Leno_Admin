@@ -49,7 +49,6 @@ export interface IdeptTreeAPI {
   result: Result[]
 }
 
-// 用户信息
 export interface userType {
   userId?: number
   deptid?: number
@@ -73,7 +72,6 @@ export interface userType {
   dept?: deptType
 }
 
-// 部门类型
 export interface deptType {
   deptId: number
   parentId: number
@@ -88,4 +86,46 @@ export interface deptType {
   updateBy: string
   createdAt: string
   updatedAt: string
+}
+
+export interface Post {
+  status: string
+  remark?: any
+  createdAt: string
+  updatedAt: string
+  postId: number
+  postCode: string
+  postName: string
+  postSort: number
+  delFlag: string
+  createBy: string
+  updateBy?: any
+}
+
+export interface Role {
+  status: string
+  remark: string
+  createdAt: string
+  updatedAt: string
+  roleId: number
+  roleName: string
+  roleKey: string
+  roleSort: number
+  dataScope: string
+  menuCheckStrictly: number
+  deptCheckStrictly: number
+  delFlag: string
+  createBy: string
+  updateBy?: any
+}
+
+export interface getAddUserResult {
+  posts: Post[]
+  roles: Role[]
+}
+
+export interface IgetAddUserAPI {
+  code: number
+  message: string
+  result: addUserResult
 }
