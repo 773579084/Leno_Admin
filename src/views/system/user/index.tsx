@@ -26,9 +26,7 @@ import {
   DoubleRightOutlined,
 } from '@ant-design/icons'
 import type { DataNode } from 'antd/es/tree'
-import type { RangePickerProps } from 'antd/es/date-picker'
 import type { ColumnsType } from 'antd/es/table'
-import dayjs from 'dayjs'
 import { getUserListAPI, delUserAPI, deptTreeAPI, getAddUserAPI } from '@/api/modules/sys_user'
 import classes from './index.module.scss'
 import AddEditUser from './component/AddEditUser'
@@ -45,14 +43,16 @@ const User: React.FC = () => {
   const [queryParams, setQueryParams] = useState({ pageNum: 1, pageSize: 10 })
   // 用户列表数据
   const [userList, setUserList] = useState({ count: 0, rows: [] as userType[] })
+
   // 消息提示 message
   const [messageApi, contextHolder] = message.useMessage()
   // model显隐
   const [isModalOpen, setIsModalOpen] = useState(false)
   // true：新增 false：编辑
   const [isAdd, setIsAdd] = useState(true)
-  // add btn
-  const [postRole, setPostRole] = useState() as any
+  // add user btn
+  const [postRole, setPostRole] = useState<getAddUserResult>({ posts: [], roles: [] })
+  const [propsValues, setPropsValues] = useState<userType>({ status: 0, sex: 2, password: 123456 })
 
   // left deptTree
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
@@ -160,34 +160,16 @@ const User: React.FC = () => {
     return loop(defaultData)
   }, [searchValue, defaultData])
 
-  //#region 头部搜索
   // 查询用户列表
   const getUserList = async () => {
     const { data } = await getUserListAPI(queryParams)
     setUserList({ ...data.result })
   }
 
-  //搜索栏搜索
+  //搜索栏提交
   const onFinish = (values: any) => {
     console.log('Success:', values)
   }
-
-  // 搜索栏报错
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
-
-  // 搜索用户状态select
-  const onGenderChange = (value: string) => {
-    console.log(16, value)
-  }
-
-  // 时间搜索
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    // Can not select days before today and today
-    return current && current < dayjs().endOf('day')
-  }
-  //#endregion
 
   //#region table
   // table 首列按钮
@@ -303,8 +285,10 @@ const User: React.FC = () => {
 
   // btn 功能
   const getPostRoleFn = async () => {
-    const res = await getAddUserAPI()
-    setPostRole(res.data.result)
+    const res = await getAddUserAPI(null)
+
+    //遍历生成格式
+    setPostRole(res.data.result as getAddUserResult)
   }
 
   return (
@@ -321,33 +305,28 @@ const User: React.FC = () => {
       </Col>
       <Col span={20}>
         <Form
-          name="basic"
+          form={form}
+          name="user"
           layout="inline"
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
           className="leno-search"
         >
           <Form.Item label="用户名称" name="roleName">
             <Input style={{ width: 240 }} placeholder="请输入用户名称" allowClear />
           </Form.Item>
-          <Form.Item label="手机号码" name="preCharacter">
+          <Form.Item label="手机号码" name="phonenumber">
             <Input style={{ width: 240 }} placeholder="请输入手机号码" allowClear />
           </Form.Item>
           <Form.Item name="status" label="状态">
-            <Select
-              style={{ width: 240 }}
-              placeholder="用户状态"
-              onChange={onGenderChange}
-              allowClear
-            >
+            <Select style={{ width: 240 }} placeholder="用户状态" allowClear>
               <Option value="male">正常</Option>
               <Option value="female">停用</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="创建时间" name="preCharacter">
-            <RangePicker style={{ width: 240 }} disabledDate={disabledDate} />
+          <Form.Item label="创建时间" name="creatTime">
+            <RangePicker style={{ width: 240 }} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" icon={<SearchOutlined />}>
@@ -432,6 +411,7 @@ const User: React.FC = () => {
           isAdd={isAdd}
           defaultData={defaultData}
           postRole={postRole}
+          propsValues={propsValues}
           onCancel={() => {
             setIsModalOpen(false)
           }}

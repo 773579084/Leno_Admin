@@ -1,3 +1,5 @@
+import { number } from 'echarts'
+
 // 用户列表
 export interface DataType {
   userId: number
@@ -51,15 +53,15 @@ export interface IdeptTreeAPI {
 
 export interface userType {
   userId?: number
-  deptid?: number
+  deptId?: number
   userName?: string
   nickName?: string
   userType?: boolean
   email?: string
   phonenumber?: number
-  sex?: boolean
+  sex?: number
   avatar?: string
-  status?: boolean
+  status?: boolean | number
   delFlag?: boolean
   loginIp?: string
   loginDate?: string
@@ -70,6 +72,9 @@ export interface userType {
   exp?: string
   createdAt?: string
   dept?: deptType
+  password?: number
+  postIds?: number[]
+  roleIds?: number[]
 }
 
 export interface deptType {
@@ -127,5 +132,5 @@ export interface getAddUserResult {
 export interface IgetAddUserAPI {
   code: number
   message: string
-  result: addUserResult
+  result: userType
 }

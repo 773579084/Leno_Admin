@@ -1,5 +1,12 @@
 import { http } from '../index'
-import { IgetUserListAPI, ILimitAPI, IsucceeMes, IdeptTreeAPI, IgetAddUserAPI } from '@/type'
+import {
+  IgetUserListAPI,
+  ILimitAPI,
+  IsucceeMes,
+  IdeptTreeAPI,
+  IgetAddUserAPI,
+  userType,
+} from '@/type'
 
 // 查询用户列表
 export const getUserListAPI = (data: ILimitAPI) => {
@@ -17,6 +24,6 @@ export const deptTreeAPI = () => {
 }
 
 // 新增用户弹窗内岗位及角色数据获取
-export const getAddUserAPI = () => {
-  return http<IgetAddUserAPI>('GET', '/system/user')
+export const getAddUserAPI = (data: userType | null) => {
+  return http<IgetAddUserAPI>('POST', '/system/user', data)
 }
