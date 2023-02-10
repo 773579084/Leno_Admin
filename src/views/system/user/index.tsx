@@ -13,6 +13,9 @@ import {
   message,
   Pagination,
   Tree,
+  Popconfirm,
+  Popover,
+  Modal,
 } from 'antd'
 import {
   SyncOutlined,
@@ -24,35 +27,48 @@ import {
   ToTopOutlined,
   AppstoreFilled,
   DoubleRightOutlined,
+  CheckCircleOutlined,
+  UnlockOutlined,
 } from '@ant-design/icons'
 import type { DataNode } from 'antd/es/tree'
 import type { ColumnsType } from 'antd/es/table'
-import { getUserListAPI, delUserAPI, deptTreeAPI, getAddUserAPI } from '@/api/modules/sys_user'
+import { getUserListAPI, delUserAPI, deptTreeAPI, getPostRoleAPI } from '@/api/modules/sys_user'
 import classes from './index.module.scss'
 import AddEditUser from './component/AddEditUser'
 import { DataType, userType, getAddUserResult } from '@/type'
 const { RangePicker } = DatePicker
+import useStore from '@/store'
 
 const dataList: { key: React.Key; title: string }[] = []
 
 const User: React.FC = () => {
   const { Option } = Select
   const [form] = Form.useForm()
+  const [resetForm] = Form.useForm()
   const { Search } = Input
+  const {
+    useUserStore: { userInfo },
+  } = useStore()
+
   // 分页
   const [queryParams, setQueryParams] = useState({ pageNum: 1, pageSize: 10 })
   // 用户列表数据
   const [userList, setUserList] = useState({ count: 0, rows: [] as userType[] })
-
-  // 消息提示 message
-  const [messageApi, contextHolder] = message.useMessage()
+  //更改用户密码
+  const [changePwdModalOpen, setChangePwdModalOpen] = useState(false)
+  // 保存 当前选择用户信息
+  const [currentUser, setCurrentUser] = useState<userType>({})
   // model显隐
   const [isModalOpen, setIsModalOpen] = useState(false)
   // true：新增 false：编辑
   const [isAdd, setIsAdd] = useState(true)
   // add user btn
   const [postRole, setPostRole] = useState<getAddUserResult>({ posts: [], roles: [] })
-  const [propsValues, setPropsValues] = useState<userType>({ status: 0, sex: 2, password: 123456 })
+  const [propsValues, setPropsValues] = useState<userType>({
+    status: 0,
+    sex: 2,
+    password: '123456',
+  })
 
   // left deptTree
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
@@ -191,10 +207,7 @@ const User: React.FC = () => {
   // 删除user
   const delUserFn = async (record: userType) => {
     const { data } = await delUserAPI(record.userId as number)
-    messageApi.open({
-      type: 'success',
-      content: data.message,
-    })
+    message.success(data.message)
     getUserList()
   }
 
@@ -251,41 +264,75 @@ const User: React.FC = () => {
       title: '操作',
       key: 'userId',
       align: 'center',
-      render: (record) => (
-        <div>
-          <Button
-            onClick={() => {
-              setIsModalOpen(true)
-              setIsAdd(false)
-            }}
-            size="small"
-            icon={<EditOutlined />}
-            type="link"
-          >
-            修改
-          </Button>
-          <Button
-            size="small"
-            onClick={() => delUserFn(record)}
-            icon={<DeleteOutlined />}
-            type="link"
-          >
-            删除
-          </Button>
-          <Button size="small" icon={<DoubleRightOutlined />} type="link">
-            更多
-          </Button>
-        </div>
-      ),
+      render: (record) =>
+        userInfo.userId !== record.userId ? (
+          <div>
+            <Button
+              onClick={() => {
+                setIsModalOpen(true)
+                setIsAdd(false)
+              }}
+              size="small"
+              icon={<EditOutlined />}
+              type="link"
+            >
+              修改
+            </Button>
+            <Popconfirm
+              title="你确认删除该名用户的个人信息吗?"
+              onConfirm={() => delUserFn(record)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button size="small" icon={<DeleteOutlined />} type="link">
+                删除
+              </Button>
+            </Popconfirm>
+            <Popover
+              content={
+                <div>
+                  <Button onClick={() => resetPwdFn(record)} type="link" icon={<UnlockOutlined />}>
+                    重置密码
+                  </Button>
+                  <Button type="link" icon={<CheckCircleOutlined />}>
+                    分配角色
+                  </Button>
+                </div>
+              }
+              title="Title"
+              placement="bottomRight"
+            >
+              <Button size="small" icon={<DoubleRightOutlined />} type="link">
+                更多
+              </Button>
+            </Popover>
+          </div>
+        ) : null,
     },
   ]
   // table 数据源
   const data: any = userList.rows
   //#endregion
 
-  // btn 功能
+  // 更改用户密码
+  const changePwdhandleOk = () => {
+    resetForm.submit()
+    setChangePwdModalOpen(false)
+  }
+  const onResntPwdFinish = async (values: userType) => {
+    try {
+      console.log(324, values)
+      // message.success(res.data.message)
+    } catch (error) {}
+  }
+  const resetPwdFn = (record: userType) => {
+    setCurrentUser(record)
+    setChangePwdModalOpen(true)
+  }
+
+  // 获取 角色岗位
   const getPostRoleFn = async () => {
-    const res = await getAddUserAPI(null)
+    const res = await getPostRoleAPI()
 
     //遍历生成格式
     setPostRole(res.data.result as getAddUserResult)
@@ -293,7 +340,6 @@ const User: React.FC = () => {
 
   return (
     <Row gutter={16} className={classes['sys-user']}>
-      {contextHolder}
       <Col span={4}>
         <Search style={{ marginBottom: 8 }} placeholder="请输入部门名称" onChange={onChange} />
         <Tree
@@ -406,6 +452,23 @@ const User: React.FC = () => {
           />
         </div>
         {/* 添加 编辑 用户 */}
+        <Modal
+          title="提示"
+          open={changePwdModalOpen}
+          onOk={changePwdhandleOk}
+          onCancel={() => setChangePwdModalOpen(false)}
+          centered
+        >
+          <div style={{ marginBottom: 20 }}>请输入"{currentUser.userName}"的新密码</div>
+          <Form form={resetForm} onFinish={onResntPwdFinish}>
+            <Form.Item
+              name="newPassword"
+              rules={[{ required: true, min: 4, max: 11, message: '请输入4-11位密码!' }]}
+            >
+              <Input.Password placeholder="请输入4-11位密码" />
+            </Form.Item>
+          </Form>
+        </Modal>
         <AddEditUser
           isModalOpen={isModalOpen}
           isAdd={isAdd}
@@ -414,6 +477,9 @@ const User: React.FC = () => {
           propsValues={propsValues}
           onCancel={() => {
             setIsModalOpen(false)
+          }}
+          onSubmit={() => {
+            getUserList()
           }}
         />
       </Col>

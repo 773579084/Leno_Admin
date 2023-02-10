@@ -6,6 +6,7 @@ import {
   IdeptTreeAPI,
   IgetAddUserAPI,
   userType,
+  IgetPostRoleApi,
 } from '@/type'
 
 // 查询用户列表
@@ -22,8 +23,16 @@ export function delUserAPI(userId: number) {
 export const deptTreeAPI = () => {
   return http<IdeptTreeAPI>('GET', '/system/dept/treeselect')
 }
-
-// 新增用户弹窗内岗位及角色数据获取
-export const getAddUserAPI = (data: userType | null) => {
+// 岗位及角色数据获取
+export const getPostRoleAPI = () => {
+  return http<IgetPostRoleApi>('GET', '/system/user')
+}
+// 新增用户
+export const addUserAPI = (data: userType) => {
   return http<IgetAddUserAPI>('POST', '/system/user', data)
+}
+
+// 修改用户信息
+export const patchUserAPI = (data: userType) => {
+  return http<IgetAddUserAPI>('PATCH', '/system/user', data)
 }

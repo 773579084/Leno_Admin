@@ -58,7 +58,7 @@ export interface userType {
   nickName?: string
   userType?: boolean
   email?: string
-  phonenumber?: number
+  phonenumber?: string
   sex?: number
   avatar?: string
   status?: boolean | number
@@ -72,7 +72,7 @@ export interface userType {
   exp?: string
   createdAt?: string
   dept?: deptType
-  password?: number
+  password?: string
   postIds?: number[]
   roleIds?: number[]
 }
@@ -127,6 +127,12 @@ export interface Role {
 export interface getAddUserResult {
   posts: Post[]
   roles: Role[]
+}
+
+export interface IgetPostRoleApi {
+  code: number
+  message: string
+  result: getAddUserResult
 }
 
 export interface IgetAddUserAPI {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Input, Select, Col, Row, Modal, Radio, TreeSelect } from 'antd'
+import { Form, Input, Select, Col, Row, Modal, Radio, TreeSelect, message } from 'antd'
 import { userType, getAddUserResult } from '@/type'
 import type { DataNode } from 'antd/es/tree'
-import { getAddUserAPI } from '@/api/modules/sys_user'
+import { addUserAPI } from '@/api/modules/sys_user'
 
 export type UserFormValueType = Record<string, unknown> & Partial<userType>
 export type AddEditFormProps = {
   onCancel: (flag?: boolean, formVals?: UserFormValueType) => void
+  onSubmit: () => void
   isModalOpen: boolean
   isAdd: boolean
   defaultData: DataNode[]
@@ -47,9 +48,10 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
   }
 
   const onFinish = async (values: userType) => {
-    console.log(47, values, values.nickName)
     try {
-      const res = await getAddUserAPI(values)
+      const res = await addUserAPI(values)
+      message.success(res.data.message)
+      props.onSubmit()
     } catch (error) {}
     props.onCancel()
   }
@@ -63,14 +65,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
       width={700}
       forceRender
     >
-      <Form
-        form={form}
-        name="addUser"
-        labelCol={{ span: 6 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
+      <Form form={form} labelCol={{ span: 6 }} initialValues={propsValues} onFinish={onFinish}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
