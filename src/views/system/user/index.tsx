@@ -32,12 +32,21 @@ import {
 } from '@ant-design/icons'
 import type { DataNode } from 'antd/es/tree'
 import type { ColumnsType } from 'antd/es/table'
-import { getUserListAPI, delUserAPI, deptTreeAPI, getPostRoleAPI } from '@/api/modules/sys_user'
+import {
+  getUserListAPI,
+  delUserAPI,
+  deptTreeAPI,
+  getPostRoleAPI,
+  patchUserPwdAPI,
+  getUserInfoAPI,
+} from '@/api/modules/sys_user'
 import classes from './index.module.scss'
 import AddEditUser from './component/AddEditUser'
 import { DataType, userType, getAddUserResult } from '@/type'
 const { RangePicker } = DatePicker
 import useStore from '@/store'
+import { number } from 'echarts'
+import async from '@/api/handle401'
 
 const dataList: { key: React.Key; title: string }[] = []
 
@@ -58,7 +67,7 @@ const User: React.FC = () => {
   const [changePwdModalOpen, setChangePwdModalOpen] = useState(false)
   // 保存 当前选择用户信息
   const [currentUser, setCurrentUser] = useState<userType>({})
-  // model显隐
+  // 新增编辑 model显隐
   const [isModalOpen, setIsModalOpen] = useState(false)
   // true：新增 false：编辑
   const [isAdd, setIsAdd] = useState(true)
@@ -264,52 +273,58 @@ const User: React.FC = () => {
       title: '操作',
       key: 'userId',
       align: 'center',
-      render: (record) =>
-        userInfo.userId !== record.userId ? (
-          <div>
-            <Button
-              onClick={() => {
-                setIsModalOpen(true)
-                setIsAdd(false)
-              }}
-              size="small"
-              icon={<EditOutlined />}
-              type="link"
-            >
-              修改
+      render: (record) => (
+        <div hidden={userInfo.userId === record.userId}>
+          <Button
+            onClick={() => {
+              setIsModalOpen(true)
+              setIsAdd(false)
+              getUserListFn(record.userId)
+            }}
+            size="small"
+            icon={<EditOutlined />}
+            type="link"
+          >
+            修改
+          </Button>
+          <Popconfirm
+            title="你确认删除该名用户的个人信息吗?"
+            onConfirm={() => delUserFn(record)}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button size="small" icon={<DeleteOutlined />} type="link">
+              删除
             </Button>
-            <Popconfirm
-              title="你确认删除该名用户的个人信息吗?"
-              onConfirm={() => delUserFn(record)}
-              okText="确认"
-              cancelText="取消"
-            >
-              <Button size="small" icon={<DeleteOutlined />} type="link">
-                删除
-              </Button>
-            </Popconfirm>
-            <Popover
-              content={
-                <div>
-                  <Button onClick={() => resetPwdFn(record)} type="link" icon={<UnlockOutlined />}>
-                    重置密码
-                  </Button>
-                  <Button type="link" icon={<CheckCircleOutlined />}>
-                    分配角色
-                  </Button>
-                </div>
-              }
-              title="Title"
-              placement="bottomRight"
-            >
-              <Button size="small" icon={<DoubleRightOutlined />} type="link">
-                更多
-              </Button>
-            </Popover>
-          </div>
-        ) : null,
+          </Popconfirm>
+          <Popover
+            content={
+              <div>
+                <Button onClick={() => resetPwdFn(record)} type="link" icon={<UnlockOutlined />}>
+                  重置密码
+                </Button>
+                <Button type="link" icon={<CheckCircleOutlined />}>
+                  分配角色
+                </Button>
+              </div>
+            }
+            title="Title"
+            placement="bottomRight"
+          >
+            <Button size="small" icon={<DoubleRightOutlined />} type="link">
+              更多
+            </Button>
+          </Popover>
+        </div>
+      ),
     },
   ]
+  // 获取用户数据
+  const getUserListFn = async (userId: number) => {
+    const { data } = await getUserInfoAPI(userId)
+    console.log(326, data.result)
+    setPropsValues(data.result)
+  }
   // table 数据源
   const data: any = userList.rows
   //#endregion
@@ -319,11 +334,21 @@ const User: React.FC = () => {
     resetForm.submit()
     setChangePwdModalOpen(false)
   }
-  const onResntPwdFinish = async (values: userType) => {
+  const changePwdCancel = () => {
+    setChangePwdModalOpen(false)
+    resetForm.resetFields()
+  }
+  const onResntPwdFinish = async (values: { newPassword: string }) => {
     try {
-      console.log(324, values)
-      // message.success(res.data.message)
-    } catch (error) {}
+      const res = await patchUserPwdAPI({
+        password: values.newPassword,
+        userId: currentUser.userId,
+      })
+      message.success(currentUser.userName + res.data.message)
+      resetForm.resetFields()
+    } catch (error) {
+      resetForm.resetFields()
+    }
   }
   const resetPwdFn = (record: userType) => {
     setCurrentUser(record)
@@ -456,7 +481,7 @@ const User: React.FC = () => {
           title="提示"
           open={changePwdModalOpen}
           onOk={changePwdhandleOk}
-          onCancel={() => setChangePwdModalOpen(false)}
+          onCancel={changePwdCancel}
           centered
         >
           <div style={{ marginBottom: 20 }}>请输入"{currentUser.userName}"的新密码</div>
@@ -469,6 +494,7 @@ const User: React.FC = () => {
             </Form.Item>
           </Form>
         </Modal>
+
         <AddEditUser
           isModalOpen={isModalOpen}
           isAdd={isAdd}

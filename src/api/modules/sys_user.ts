@@ -7,6 +7,7 @@ import {
   IgetAddUserAPI,
   userType,
   IgetPostRoleApi,
+  IreturnApi,
 } from '@/type'
 
 // 查询用户列表
@@ -30,6 +31,16 @@ export const getPostRoleAPI = () => {
 // 新增用户
 export const addUserAPI = (data: userType) => {
   return http<IgetAddUserAPI>('POST', '/system/user', data)
+}
+
+// 修改用户密码信息
+export const patchUserPwdAPI = (data: userType) => {
+  return http<IreturnApi>('PATCH', '/system/user/updatePwd', data)
+}
+
+// 获取用户个人详细数据
+export const getUserInfoAPI = (userId: number) => {
+  return http<IgetAddUserAPI>('GET', '/system/userInfo/' + userId)
 }
 
 // 修改用户信息

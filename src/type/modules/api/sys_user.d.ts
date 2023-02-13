@@ -140,3 +140,10 @@ export interface IgetAddUserAPI {
   message: string
   result: userType
 }
+
+// 无参数返回
+export interface IreturnApi {
+  code: number
+  message: string
+  result: ''
+}
