@@ -56,13 +56,13 @@ export interface userType {
   deptId?: number
   userName?: string
   nickName?: string
-  userType?: boolean
+  userType?: number
   email?: string
   phonenumber?: string
   sex?: number
   avatar?: string
-  status?: boolean | number
-  delFlag?: boolean
+  status?: number
+  delFlag?: number
   loginIp?: string
   loginDate?: string
   createBy?: string
@@ -75,6 +75,8 @@ export interface userType {
   password?: string
   postIds?: number[]
   roleIds?: number[]
+  posts?: Post[]
+  roles?: Role[]
 }
 
 export interface deptType {

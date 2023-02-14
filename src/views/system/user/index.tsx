@@ -322,8 +322,11 @@ const User: React.FC = () => {
   // 获取用户数据
   const getUserListFn = async (userId: number) => {
     const { data } = await getUserInfoAPI(userId)
-    console.log(326, data.result)
     setPropsValues(data.result)
+    setPostRole({
+      posts: data.result.posts,
+      roles: data.result.roles,
+    } as getAddUserResult)
   }
   // table 数据源
   const data: any = userList.rows
