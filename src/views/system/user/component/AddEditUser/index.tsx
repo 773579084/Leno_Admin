@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input, Select, Col, Row, Modal, Radio, TreeSelect, message } from 'antd'
 import { userType, getAddUserResult } from '@/type'
 import type { DataNode } from 'antd/es/tree'
-import { addUserAPI } from '@/api/modules/sys_user'
+import { addUserAPI, putUserAPI } from '@/api/modules/sysUser'
 
 export type UserFormValueType = Record<string, unknown> & Partial<userType>
 export type AddEditFormProps = {
   onCancel: (flag?: boolean, formVals?: UserFormValueType) => void
   onSubmit: () => void
   isModalOpen: boolean
-  isAdd: boolean
   defaultData: DataNode[]
   postRole: getAddUserResult
   propsValues: userType
@@ -19,7 +18,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
   const { Option } = Select
   const { TextArea } = Input
   const [form] = Form.useForm()
-  const { isModalOpen, isAdd, defaultData, postRole, propsValues } = props
+  const { isModalOpen, defaultData, postRole, propsValues } = props
 
   useEffect(() => {
     form.resetFields()
@@ -35,6 +34,7 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
       postIds: propsValues.postIds,
       roleIds: propsValues.roleIds,
       remark: propsValues.remark,
+      userId: propsValues.userId,
     })
     console.log(39, propsValues)
   }, [form, props])
@@ -48,10 +48,15 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
     form.resetFields()
   }
 
-  const onFinish = async (values: userType) => {
+  const handleFinish = async (values: userType) => {
     try {
-      const res = await addUserAPI(values)
-      message.success(res.data.message)
+      if (propsValues.userId) {
+        const res = await putUserAPI({ ...values, userId: propsValues.userId })
+        message.success(res.data.message)
+      } else {
+        const res = await addUserAPI(values)
+        message.success(res.data.message)
+      }
       props.onSubmit()
     } catch (error) {}
     props.onCancel()
@@ -59,22 +64,22 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
 
   return (
     <Modal
-      title={isAdd ? '新增用户' : '编辑用户'}
+      title={propsValues.userId ? '编辑用户' : '新增用户'}
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
       width={700}
       forceRender
     >
-      <Form form={form} labelCol={{ span: 6 }} initialValues={propsValues} onFinish={onFinish}>
+      <Form form={form} labelCol={{ span: 6 }} initialValues={propsValues} onFinish={handleFinish}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
               label="用户昵称"
               name="nickName"
-              rules={[{ required: true, min: 4, max: 11, message: '请输入4-11位用户昵称!' }]}
+              rules={[{ required: true, min: 1, max: 10, message: '请输入1-10位用户昵称!' }]}
             >
-              <Input placeholder="请输入4-11位用户昵称" />
+              <Input placeholder="请输入1-10位用户昵称" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -118,26 +123,29 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16} hidden={!isAdd}>
-          <Col span={12}>
-            <Form.Item
-              label="用户名称"
-              name="userName"
-              rules={[{ required: true, min: 4, max: 11, message: '请输入4-11位用户名称!' }]}
-            >
-              <Input placeholder="请输入4-11位用户名称" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="用户密码"
-              name="password"
-              rules={[{ required: true, min: 4, max: 11, message: '请输入4-11位密码!' }]}
-            >
-              <Input.Password placeholder="请输入4-11位密码" />
-            </Form.Item>
-          </Col>
-        </Row>
+        {!propsValues.userId ? (
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="用户名称"
+                name="userName"
+                rules={[{ required: true, min: 4, max: 11, message: '请输入4-11位用户名称!' }]}
+              >
+                <Input placeholder="请输入4-11位用户名称" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="用户密码"
+                name="password"
+                rules={[{ required: true, min: 4, max: 11, message: '请输入4-11位密码!' }]}
+              >
+                <Input.Password placeholder="请输入4-11位密码" />
+              </Form.Item>
+            </Col>
+          </Row>
+        ) : null}
+
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="用户性别" name="sex">
@@ -195,4 +203,5 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
     </Modal>
   )
 }
+
 export default AddEditUser

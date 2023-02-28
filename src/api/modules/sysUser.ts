@@ -35,7 +35,7 @@ export const addUserAPI = (data: userType) => {
 
 // 修改用户密码信息
 export const patchUserPwdAPI = (data: userType) => {
-  return http<IreturnApi>('PATCH', '/system/user/updatePwd', data)
+  return http<IreturnApi>('PUT', '/system/user/updatePwd', data)
 }
 
 // 获取用户个人详细数据
@@ -44,6 +44,6 @@ export const getUserInfoAPI = (userId: number) => {
 }
 
 // 修改用户信息
-export const patchUserAPI = (data: userType) => {
-  return http<IgetAddUserAPI>('PATCH', '/system/user', data)
+export const putUserAPI = (data: userType) => {
+  return http<IgetAddUserAPI>('PUT', '/system/user', data)
 }

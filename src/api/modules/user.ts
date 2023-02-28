@@ -32,10 +32,10 @@ export const updateAvatarAPI = (data: FormData) => {
 
 // 修改密码
 export const updatePwdAPI = (data: IChangePwd) => {
-  return http<IsucceeMes>('patch', '/user/profile/updatePwd', data)
+  return http<IsucceeMes>('PUT', '/user/profile/updatePwd', data)
 }
 
 // 修改个人基本信息
 export const updateUserInfoAPI = (data: IUserProp) => {
-  return http<IsucceeMes>('patch', '/user/profile', data)
+  return http<IsucceeMes>('PUT', '/user/profile', data)
 }

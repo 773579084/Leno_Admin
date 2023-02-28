@@ -1,0 +1,69 @@
+// 正常状态
+.primary-color-normal {
+  .ant-btn-default{
+    color: #1890ff;
+    background: #e8f4ff;
+    border-color: #a3d3ff;
+  }
+  .ant-btn-default:hover {
+    background: #1890ff;
+    color: white;
+  }
+}
+// 禁用状态
+.primary-color-disabled {
+  .ant-btn-default{
+    color: #1890ff;
+    background: #e8f4ff;
+    border-color: #a3d3ff;
+  }
+}
+
+.success-color-btn {
+  .ant-btn-default{
+    color: #71e2a3;
+    background-color: #e7faf0;
+    border-color: #d0f5e0;
+  }
+  .ant-btn-default:hover{
+    background: #71e2a3;
+    color: white;
+  }
+}
+
+.danger-color-btn {
+  .ant-btn-default{
+    color: #ff9292;
+    background-color: #ffeded;
+    border-color: #ffdbdb;
+  }
+  .ant-btn-default:hover {
+    background: #ff4949;
+    color: white;
+  }
+}
+
+.info-color-btn {
+  .ant-btn-default{
+    color: #909399;
+    background: #f4f4f5;
+    border-color: #d3d4d6;
+  }
+  .ant-btn-default:hover {
+    background: #909399;
+    color: white;
+  }
+}
+
+.warning-color-btn {
+  .ant-btn-default{
+    color: #ffba00;
+    background: #fff8e6;
+    border-color: #ffe399;
+  }
+  .ant-btn-default:hover {
+    background: #ffba00;
+    color: white;
+  }
+}
+

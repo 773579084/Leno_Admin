@@ -39,14 +39,13 @@ import {
   getPostRoleAPI,
   patchUserPwdAPI,
   getUserInfoAPI,
-} from '@/api/modules/sys_user'
+} from '@/api/modules/sysUser'
 import classes from './index.module.scss'
 import AddEditUser from './component/AddEditUser'
 import { DataType, userType, getAddUserResult } from '@/type'
 const { RangePicker } = DatePicker
 import useStore from '@/store'
-import { number } from 'echarts'
-import async from '@/api/handle401'
+import ColorBtn from '@/components/ColorBtn'
 
 const dataList: { key: React.Key; title: string }[] = []
 
@@ -69,8 +68,6 @@ const User: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<userType>({})
   // 新增编辑 model显隐
   const [isModalOpen, setIsModalOpen] = useState(false)
-  // true：新增 false：编辑
-  const [isAdd, setIsAdd] = useState(true)
   // add user btn
   const [postRole, setPostRole] = useState<getAddUserResult>({ posts: [], roles: [] })
   const [propsValues, setPropsValues] = useState<userType>({
@@ -278,7 +275,6 @@ const User: React.FC = () => {
           <Button
             onClick={() => {
               setIsModalOpen(true)
-              setIsAdd(false)
               getUserListFn(record.userId)
             }}
             size="small"
@@ -439,6 +435,9 @@ const User: React.FC = () => {
               <Col className="export-btn">
                 <Button icon={<VerticalAlignBottomOutlined />}>导出</Button>
               </Col>
+              <Col>
+                <ColorBtn text={'测试'}></ColorBtn>
+              </Col>
             </Row>
           </Col>
           <Col span={8}>
@@ -500,12 +499,16 @@ const User: React.FC = () => {
 
         <AddEditUser
           isModalOpen={isModalOpen}
-          isAdd={isAdd}
           defaultData={defaultData}
           postRole={postRole}
           propsValues={propsValues}
-          onCancel={() => {
+          onCancel={(values) => {
             setIsModalOpen(false)
+            setPropsValues({
+              status: 0,
+              sex: 2,
+              password: '123456',
+            })
           }}
           onSubmit={() => {
             getUserList()
