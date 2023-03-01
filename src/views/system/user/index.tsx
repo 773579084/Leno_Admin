@@ -410,8 +410,8 @@ const User: React.FC = () => {
         <Row gutter={16} className="mb10">
           <Col span={16} className="leno-btn">
             <Row gutter={8}>
-              <Col className="add-btn">
-                <Button
+              <Col>
+                <ColorBtn
                   icon={<PlusOutlined />}
                   onClick={() => {
                     setIsModalOpen(true)
@@ -419,24 +419,27 @@ const User: React.FC = () => {
                   }}
                 >
                   新增
-                </Button>
-              </Col>
-              <Col className="change-btn">
-                <Button icon={<EditOutlined />}>修改</Button>
-              </Col>
-              <Col className="del-btn">
-                <Button danger icon={<DeleteOutlined />}>
-                  删除
-                </Button>
-              </Col>
-              <Col className="import-btn">
-                <Button icon={<ToTopOutlined />}>导入</Button>
-              </Col>
-              <Col className="export-btn">
-                <Button icon={<VerticalAlignBottomOutlined />}>导出</Button>
+                </ColorBtn>
               </Col>
               <Col>
-                <ColorBtn text={'测试'}></ColorBtn>
+                <ColorBtn color="success" icon={<EditOutlined />}>
+                  修改
+                </ColorBtn>
+              </Col>
+              <Col>
+                <ColorBtn color="danger" icon={<DeleteOutlined />}>
+                  删除
+                </ColorBtn>
+              </Col>
+              <Col>
+                <ColorBtn color="info" icon={<ToTopOutlined />}>
+                  导入
+                </ColorBtn>
+              </Col>
+              <Col>
+                <ColorBtn color="warning" icon={<VerticalAlignBottomOutlined />}>
+                  导出
+                </ColorBtn>
               </Col>
             </Row>
           </Col>
