@@ -39,10 +39,19 @@ instance.interceptors.response.use(
   function (error) {
     NProgress.done()
     const { status, config, data } = error.response
+    // 错误提示
+    if (data.code === '400') {
+      message.error(data.message)
+      return
+    } else if (data.code === '500') {
+      message.error(data.message)
+      return
+    }
+
     // 判断token过期，进行 refresh token
     if (status === 401) {
       return handle401(config)
-    } else if (status === 403) {
+    } else if (status === 403 || data.code === '401') {
       confirm({
         title: '系统提示',
         content: '登录状态已过期，您可以继续留在该页面，或者重新登录',

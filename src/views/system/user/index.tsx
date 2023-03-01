@@ -75,6 +75,26 @@ const User: React.FC = () => {
     sex: 2,
     password: '123456',
   })
+  // 非单个禁用
+  const [single, setSingle] = useState(true)
+  // 非多个禁用
+  const [multiple, setMultiple] = useState(true)
+  // 保存table 选择的key
+  const [rowKeys, setRowKeys] = useState('')
+
+  // row-select
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      if (!selectedRowKeys.length || selectedRowKeys.length > 1) {
+        setSingle(true)
+      } else {
+        setSingle(false)
+      }
+      selectedRowKeys.length ? setMultiple(false) : setMultiple(true)
+      setRowKeys(selectedRowKeys.join(','))
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+    },
+  }
 
   // left deptTree
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
@@ -211,10 +231,12 @@ const User: React.FC = () => {
   }
 
   // 删除user
-  const delUserFn = async (record: userType) => {
-    const { data } = await delUserAPI(record.userId as number)
-    message.success(data.message)
-    getUserList()
+  const delUserFn = async (ids: number | string) => {
+    try {
+      const { data } = await delUserAPI(ids)
+      message.success(data.message)
+      getUserList()
+    } catch (error) {}
   }
 
   // table columns
@@ -285,7 +307,7 @@ const User: React.FC = () => {
           </Button>
           <Popconfirm
             title="你确认删除该名用户的个人信息吗?"
-            onConfirm={() => delUserFn(record)}
+            onConfirm={() => delUserFn(record.userId)}
             okText="确认"
             cancelText="取消"
           >
@@ -316,7 +338,7 @@ const User: React.FC = () => {
     },
   ]
   // 获取用户数据
-  const getUserListFn = async (userId: number) => {
+  const getUserListFn = async (userId: number | string) => {
     const { data } = await getUserInfoAPI(userId)
     setPropsValues(data.result)
     setPostRole({
@@ -422,12 +444,25 @@ const User: React.FC = () => {
                 </ColorBtn>
               </Col>
               <Col>
-                <ColorBtn color="success" icon={<EditOutlined />}>
+                <ColorBtn
+                  disabled={single}
+                  color="success"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setIsModalOpen(true)
+                    getUserListFn(rowKeys)
+                  }}
+                >
                   修改
                 </ColorBtn>
               </Col>
               <Col>
-                <ColorBtn color="danger" icon={<DeleteOutlined />}>
+                <ColorBtn
+                  onClick={() => delUserFn(rowKeys)}
+                  disabled={multiple}
+                  color="danger"
+                  icon={<DeleteOutlined />}
+                >
                   删除
                 </ColorBtn>
               </Col>
@@ -465,7 +500,7 @@ const User: React.FC = () => {
         </Row>
         <div className="leno-table">
           <Table
-            rowSelection={{ type: selectionType }}
+            rowSelection={{ type: selectionType, ...rowSelection }}
             columns={columns}
             dataSource={data}
             pagination={false}

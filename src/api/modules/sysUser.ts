@@ -16,7 +16,7 @@ export const getUserListAPI = (data: ILimitAPI) => {
 }
 
 // 删除用户
-export function delUserAPI(userId: number) {
+export function delUserAPI(userId: number | string) {
   return http<IsucceeMes>('DELETE', '/system/user/' + userId)
 }
 
@@ -39,7 +39,7 @@ export const patchUserPwdAPI = (data: userType) => {
 }
 
 // 获取用户个人详细数据
-export const getUserInfoAPI = (userId: number) => {
+export const getUserInfoAPI = (userId: number | string) => {
   return http<IgetAddUserAPI>('GET', '/system/userInfo/' + userId)
 }
 
