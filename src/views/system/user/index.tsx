@@ -39,13 +39,15 @@ import {
   getPostRoleAPI,
   patchUserPwdAPI,
   getUserInfoAPI,
+  putUserStatusAPI,
 } from '@/api/modules/sysUser'
 import classes from './index.module.scss'
 import AddEditUser from './component/AddEditUser'
-import { DataType, userType, getAddUserResult } from '@/type'
+import { DataType, userType, getAddUserResult, userQueryType } from '@/type'
 const { RangePicker } = DatePicker
 import useStore from '@/store'
 import ColorBtn from '@/components/ColorBtn'
+import { Key } from 'rc-tree/lib/interface'
 
 const dataList: { key: React.Key; title: string }[] = []
 
@@ -59,7 +61,7 @@ const User: React.FC = () => {
   } = useStore()
 
   // 分页
-  const [queryParams, setQueryParams] = useState({ pageNum: 1, pageSize: 10 })
+  const [queryParams, setQueryParams] = useState<userQueryType>({ pageNum: 1, pageSize: 10 })
   // 用户列表数据
   const [userList, setUserList] = useState({ count: 0, rows: [] as userType[] })
   //更改用户密码
@@ -71,8 +73,8 @@ const User: React.FC = () => {
   // add user btn
   const [postRole, setPostRole] = useState<getAddUserResult>({ posts: [], roles: [] })
   const [propsValues, setPropsValues] = useState<userType>({
-    status: 0,
-    sex: 2,
+    status: '0',
+    sex: '2',
     password: '123456',
   })
   // 非单个禁用
@@ -213,6 +215,11 @@ const User: React.FC = () => {
     console.log('Success:', values)
   }
 
+  // tree
+  const selectTreeFn = (selectedKeys: Key[]) => {
+    setQueryParams({ ...queryParams, deptId: selectedKeys[0] as number })
+  }
+
   //#region table
   // table 首列按钮
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('checkbox')
@@ -226,8 +233,15 @@ const User: React.FC = () => {
   }, [queryParams])
 
   // 用户状态修改
-  const onUserStaChange = (checked: boolean) => {
-    console.log(`switch to ${checked}`)
+  const onUserStaChange = async (checked: string, userId: number) => {
+    try {
+      const { data } = await putUserStatusAPI({
+        status: checked === '0' ? (checked = '1') : (checked = '0'),
+        userId,
+      })
+      message.success(data.message)
+      getUserList()
+    } catch (error) {}
   }
 
   // 删除user
@@ -246,39 +260,54 @@ const User: React.FC = () => {
       dataIndex: 'userId',
       key: 'userId',
       align: 'center',
+      width: '100px',
     },
     {
       title: '用户名称',
       dataIndex: 'userName',
       key: 'userId',
       align: 'center',
+      width: '120px',
     },
     {
       title: '用户昵称',
       dataIndex: 'nickName',
       key: 'userId',
       align: 'center',
+      width: '150px',
     },
     {
       title: '区域',
       dataIndex: ['dept', 'deptName'],
       key: 'userId',
       align: 'center',
+      width: '120px',
     },
     {
       title: '手机号码',
       dataIndex: 'phonenumber',
       key: 'userId',
       align: 'center',
+      width: '120px',
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'userId',
       align: 'center',
+      width: '80px',
       render: (_, record) => (
         <div>
-          <Switch checked={!record.status} onChange={onUserStaChange} />
+          <Switch
+            checked={record.status === '0'}
+            onChange={() => {
+              if (record.userName === 'admin') {
+                message.warn('超级管理员不可停用！')
+              } else {
+                onUserStaChange(record.status, record.userId)
+              }
+            }}
+          />
         </div>
       ),
     },
@@ -287,11 +316,14 @@ const User: React.FC = () => {
       dataIndex: 'createdAt',
       key: 'userId',
       align: 'center',
+      width: '160px',
     },
     {
       title: '操作',
       key: 'userId',
       align: 'center',
+      width: '220px',
+      fixed: 'right',
       render: (record) => (
         <div hidden={userInfo.userId === record.userId}>
           <Button
@@ -393,6 +425,9 @@ const User: React.FC = () => {
           expandedKeys={expandedKeys}
           autoExpandParent={autoExpandParent}
           treeData={treeData}
+          onSelect={(selectedKeys: Key[]) => {
+            selectTreeFn(selectedKeys)
+          }}
         />
       </Col>
       <Col span={20}>
@@ -500,11 +535,13 @@ const User: React.FC = () => {
         </Row>
         <div className="leno-table">
           <Table
-            rowSelection={{ type: selectionType, ...rowSelection }}
+            rowSelection={{ type: selectionType, fixed: 'left', ...rowSelection }}
             columns={columns}
             dataSource={data}
             pagination={false}
             rowKey="userId"
+            size="middle"
+            scroll={{ x: 'max-content' }}
           />
           <Pagination
             className={classes['pagination']}
@@ -543,8 +580,8 @@ const User: React.FC = () => {
           onCancel={(values) => {
             setIsModalOpen(false)
             setPropsValues({
-              status: 0,
-              sex: 2,
+              status: '0',
+              sex: '2',
               password: '123456',
             })
           }}

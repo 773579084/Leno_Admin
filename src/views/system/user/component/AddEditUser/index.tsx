@@ -150,17 +150,17 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
           <Col span={12}>
             <Form.Item label="用户性别" name="sex">
               <Select placeholder="请选择用户性别" allowClear>
-                <Option value={0}>男</Option>
-                <Option value={1}>女</Option>
-                <Option value={2}>未知</Option>
+                <Option value="0">男</Option>
+                <Option value="1">女</Option>
+                <Option value="2">未知</Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="状态" name="status">
               <Radio.Group>
-                <Radio value={0}> 正常 </Radio>
-                <Radio value={1}> 停用 </Radio>
+                <Radio value="0"> 正常 </Radio>
+                <Radio value="1"> 停用 </Radio>
               </Radio.Group>
             </Form.Item>
           </Col>

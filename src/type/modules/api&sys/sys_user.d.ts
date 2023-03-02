@@ -7,7 +7,7 @@ export interface DataType {
   nickName: string
   deptName: string
   phonenumber: string
-  status: number
+  status: string
   createAt: string
 }
 
@@ -59,10 +59,10 @@ export interface userType {
   userType?: number
   email?: string
   phonenumber?: string
-  sex?: number
+  sex?: string
   avatar?: string
-  status?: number
-  delFlag?: number
+  status?: string
+  delFlag?: string
   loginIp?: string
   loginDate?: string
   createBy?: string
@@ -148,4 +148,15 @@ export interface IreturnApi {
   code: number
   message: string
   result: ''
+}
+
+// sys_user query
+export interface userQueryType {
+  pageNum: number
+  pageSize: number
+  deptId?: number
+  userName?: string
+  phonenumber?: string
+  status?: string
+  createdAt?: string
 }

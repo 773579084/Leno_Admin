@@ -47,3 +47,8 @@ export const getUserInfoAPI = (userId: number | string) => {
 export const putUserAPI = (data: userType) => {
   return http<IgetAddUserAPI>('PUT', '/system/user', data)
 }
+
+// 修改用户状态
+export const putUserStatusAPI = (data: { status: string; userId: number }) => {
+  return http<IgetAddUserAPI>('PUT', '/system/user/profile', data)
+}
