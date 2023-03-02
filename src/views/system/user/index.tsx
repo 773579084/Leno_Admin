@@ -53,7 +53,7 @@ const dataList: { key: React.Key; title: string }[] = []
 
 const User: React.FC = () => {
   const { Option } = Select
-  const [form] = Form.useForm()
+  const [queryForm] = Form.useForm()
   const [resetForm] = Form.useForm()
   const { Search } = Input
   const {
@@ -83,6 +83,32 @@ const User: React.FC = () => {
   const [multiple, setMultiple] = useState(true)
   // 保存table 选择的key
   const [rowKeys, setRowKeys] = useState('')
+  // left deptTree
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
+  const [searchValue, setSearchValue] = useState('')
+  const [autoExpandParent, setAutoExpandParent] = useState(true)
+  const [defaultData, setdefaultData] = useState<DataNode[]>([])
+
+  // create
+  useEffect(() => {
+    getUserList()
+    generateData()
+  }, [])
+
+  useEffect(() => {
+    getUserList()
+  }, [queryParams])
+
+  const searchQueryFn = () => {
+    const form = queryForm.getFieldsValue()
+    console.log(104, form)
+    setQueryParams({ pageNum: 1, pageSize: 10, ...form })
+  }
+
+  const resetQueryFn = () => {
+    queryForm.resetFields()
+    setQueryParams({ pageNum: 1, pageSize: 10 })
+  }
 
   // row-select
   const rowSelection = {
@@ -97,20 +123,6 @@ const User: React.FC = () => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
     },
   }
-
-  // left deptTree
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
-  // 搜索值
-  const [searchValue, setSearchValue] = useState('')
-  const [autoExpandParent, setAutoExpandParent] = useState(true)
-  // tree data
-  const [defaultData, setdefaultData] = useState<DataNode[]>([])
-
-  // create
-  useEffect(() => {
-    getUserList()
-    generateData()
-  }, [])
 
   // left deptTree
   // 生成树状数据
@@ -228,9 +240,6 @@ const User: React.FC = () => {
   const onPagChange = async (pageNum: number, pageSize: number) => {
     setQueryParams({ pageNum, pageSize })
   }
-  useEffect(() => {
-    getUserList()
-  }, [queryParams])
 
   // 用户状态修改
   const onUserStaChange = async (checked: string, userId: number) => {
@@ -302,7 +311,7 @@ const User: React.FC = () => {
             checked={record.status === '0'}
             onChange={() => {
               if (record.userName === 'admin') {
-                message.warn('超级管理员不可停用！')
+                message.warn('超级管理员不可停用')
               } else {
                 onUserStaChange(record.status, record.userId)
               }
@@ -432,36 +441,48 @@ const User: React.FC = () => {
       </Col>
       <Col span={20}>
         <Form
-          form={form}
-          name="user"
+          form={queryForm}
           layout="inline"
+          name={'query'}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           autoComplete="off"
           className="leno-search"
         >
-          <Form.Item label="用户名称" name="roleName">
-            <Input style={{ width: 240 }} placeholder="请输入用户名称" allowClear />
+          <Form.Item label="用户名称" name="userName">
+            <Input
+              style={{ width: 240 }}
+              placeholder="请输入用户名称"
+              allowClear
+              onPressEnter={searchQueryFn}
+            />
           </Form.Item>
           <Form.Item label="手机号码" name="phonenumber">
-            <Input style={{ width: 240 }} placeholder="请输入手机号码" allowClear />
+            <Input
+              style={{ width: 240 }}
+              placeholder="请输入手机号码"
+              allowClear
+              onPressEnter={searchQueryFn}
+            />
           </Form.Item>
           <Form.Item name="status" label="状态">
             <Select style={{ width: 240 }} placeholder="用户状态" allowClear>
-              <Option value="male">正常</Option>
-              <Option value="female">停用</Option>
+              <Option value="0">正常</Option>
+              <Option value="1">停用</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="创建时间" name="creatTime">
+          <Form.Item label="创建时间" name="createdAt">
             <RangePicker style={{ width: 240 }} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" icon={<SearchOutlined />}>
+            <Button onClick={searchQueryFn} type="primary" icon={<SearchOutlined />}>
               搜索
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button icon={<SyncOutlined />}>重置</Button>
+            <Button onClick={resetQueryFn} icon={<SyncOutlined />}>
+              重置
+            </Button>
           </Form.Item>
         </Form>
         <Row gutter={16} className="mb10">

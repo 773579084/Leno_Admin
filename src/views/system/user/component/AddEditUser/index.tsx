@@ -71,7 +71,13 @@ const AddEditUser: React.FC<AddEditFormProps> = (props) => {
       width={700}
       forceRender
     >
-      <Form form={form} labelCol={{ span: 6 }} initialValues={propsValues} onFinish={handleFinish}>
+      <Form
+        form={form}
+        name={'addEdit'}
+        labelCol={{ span: 6 }}
+        initialValues={propsValues}
+        onFinish={handleFinish}
+      >
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
