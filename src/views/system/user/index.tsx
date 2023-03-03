@@ -97,8 +97,16 @@ const User: React.FC = () => {
   }, [])
 
   useEffect(() => {
+    console.log(100)
+
     getUserList()
   }, [queryParams])
+
+  // 查询用户列表
+  const getUserList = async () => {
+    const { data } = await getUserListAPI(queryParams)
+    setUserList({ ...data.result })
+  }
 
   const searchQueryFn = () => {
     let { createdAt, ...form } = queryForm.getFieldsValue()
@@ -227,12 +235,6 @@ const User: React.FC = () => {
     return loop(defaultData)
   }, [searchValue, defaultData])
 
-  // 查询用户列表
-  const getUserList = async () => {
-    const { data } = await getUserListAPI(queryParams)
-    setUserList({ ...data.result })
-  }
-
   //搜索栏提交
   const onFinish = (values: any) => {
     console.log('Success:', values)
@@ -265,11 +267,14 @@ const User: React.FC = () => {
   }
 
   // 删除user
-  const delUserFn = async (ids: number | string) => {
+  const delUserFn = async (ids: string) => {
     try {
       const { data } = await delUserAPI(ids)
       message.success(data.message)
-      getUserList()
+      setQueryParams({
+        pageNum: Math.ceil((userList.count - ids.split(',').length) / queryParams.pageSize),
+        pageSize: queryParams.pageSize,
+      })
     } catch (error) {}
   }
 
@@ -359,7 +364,7 @@ const User: React.FC = () => {
           </Button>
           <Popconfirm
             title="你确认删除该名用户的个人信息吗?"
-            onConfirm={() => delUserFn(record.userId)}
+            onConfirm={() => delUserFn(`${record.userId}`)}
             okText="确认"
             cancelText="取消"
           >
