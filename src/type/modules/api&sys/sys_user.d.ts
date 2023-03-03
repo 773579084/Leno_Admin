@@ -158,5 +158,6 @@ export interface userQueryType {
   userName?: string
   phonenumber?: string
   status?: string
-  createdAt?: string
+  beginTime?: string
+  endTime?: string
 }

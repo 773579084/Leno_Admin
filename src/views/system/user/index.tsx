@@ -48,6 +48,7 @@ const { RangePicker } = DatePicker
 import useStore from '@/store'
 import ColorBtn from '@/components/ColorBtn'
 import { Key } from 'rc-tree/lib/interface'
+import dayjs from 'dayjs'
 
 const dataList: { key: React.Key; title: string }[] = []
 
@@ -100,9 +101,19 @@ const User: React.FC = () => {
   }, [queryParams])
 
   const searchQueryFn = () => {
-    const form = queryForm.getFieldsValue()
-    console.log(104, form)
-    setQueryParams({ pageNum: 1, pageSize: 10, ...form })
+    let { createdAt, ...form } = queryForm.getFieldsValue()
+    if (createdAt) {
+      form = {
+        ...form,
+        beginTime: dayjs(createdAt[0]).format('YYYY-MM-DD HH:mm:ss'),
+        endTime: dayjs(createdAt[1]).format('YYYY-MM-DD HH:mm:ss'),
+      }
+    }
+    setQueryParams({
+      pageNum: 1,
+      pageSize: 10,
+      ...form,
+    })
   }
 
   const resetQueryFn = () => {
