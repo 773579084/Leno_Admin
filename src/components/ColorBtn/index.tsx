@@ -4,16 +4,15 @@ import { Button } from 'antd'
 
 const ColorBtn = (props: {
   block: boolean
-  // 失效
   disabled: boolean
   href: string
   target: string
-  shape: 'default' | 'circle' | 'round' | undefined
-  size: 'large' | 'middle' | 'small' | undefined
+  shape: 'default' | 'circle' | 'round'
+  size: 'large' | 'middle' | 'small'
   icon: ReactNode
   // btn 颜色种类
   color: 'primary' | 'success' | 'info' | 'warning' | 'danger'
-  loading: boolean | object
+  loading: boolean
   // 插槽
   children: string | null
   onClick: MouseEventHandler<HTMLElement>
@@ -77,18 +76,11 @@ const ColorBtn = (props: {
 ColorBtn.defaultProps = {
   color: 'primary',
   block: false,
-  // 失效
   disabled: false,
-  // 跳转地址
   href: null,
   target: null,
-  // icon
   icon: null,
-  // 载入状态
   loading: false,
-  // 文本
-  text: null,
-  // 按钮形状
   shape: 'default',
   children: null,
   size: 'middle',
