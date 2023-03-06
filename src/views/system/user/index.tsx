@@ -42,16 +42,16 @@ import {
   putUserStatusAPI,
 } from '@/api/modules/sysUser'
 import classes from './index.module.scss'
-import AddEditUser from './component/AddEditUser'
 import { DataType, userType, getAddUserResult, userQueryType } from '@/type'
 const { RangePicker } = DatePicker
 import useStore from '@/store'
 import ColorBtn from '@/components/ColorBtn'
+import AddEditUser from './component/AddEditUser'
+import ShowHiddleColumn from './component/ShowHiddleColumn'
 import { Key } from 'rc-tree/lib/interface'
 import dayjs from 'dayjs'
 
 const dataList: { key: React.Key; title: string }[] = []
-
 const User: React.FC = () => {
   const { Option } = Select
   const [queryForm] = Form.useForm()
@@ -65,12 +65,19 @@ const User: React.FC = () => {
   const [queryParams, setQueryParams] = useState<userQueryType>({ pageNum: 1, pageSize: 10 })
   // 用户列表数据
   const [userList, setUserList] = useState({ count: 0, rows: [] as userType[] })
+  // 用户列表 columns
+
+  // table loading
+  const [loading, setLoading] = useState(true)
   //更改用户密码
   const [changePwdModalOpen, setChangePwdModalOpen] = useState(false)
   // 保存 当前选择用户信息
   const [currentUser, setCurrentUser] = useState<userType>({})
   // 新增编辑 model显隐
   const [isModalOpen, setIsModalOpen] = useState(false)
+  // 显隐列 model显隐
+  const [showHiddenOpen, setShowHiddenOpen] = useState(false)
+  const [targetKeys, setTargetKeys] = useState<string[]>([])
   // add user btn
   const [postRole, setPostRole] = useState<getAddUserResult>({ posts: [], roles: [] })
   const [propsValues, setPropsValues] = useState<userType>({
@@ -82,6 +89,8 @@ const User: React.FC = () => {
   const [single, setSingle] = useState(true)
   // 非多个禁用
   const [multiple, setMultiple] = useState(true)
+  // 控制搜索隐藏显示
+  const [searchShow, setSearchShow] = useState(true)
   // 保存table 选择的key
   const [rowKeys, setRowKeys] = useState('')
   // left deptTree
@@ -97,15 +106,16 @@ const User: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    console.log(100)
-
     getUserList()
   }, [queryParams])
 
   // 查询用户列表
   const getUserList = async () => {
     const { data } = await getUserListAPI(queryParams)
+    console.log(117, data)
+
     setUserList({ ...data.result })
+    setLoading(false)
   }
 
   const searchQueryFn = () => {
@@ -128,6 +138,9 @@ const User: React.FC = () => {
     queryForm.resetFields()
     setQueryParams({ pageNum: 1, pageSize: 10 })
   }
+
+  // 导出excel
+  const exportExcelaFn = () => {}
 
   // row-select
   const rowSelection = {
@@ -279,7 +292,7 @@ const User: React.FC = () => {
   }
 
   // table columns
-  const columns: ColumnsType<DataType> = [
+  let columns = [
     {
       title: '用户编号',
       dataIndex: 'userId',
@@ -290,38 +303,38 @@ const User: React.FC = () => {
     {
       title: '用户名称',
       dataIndex: 'userName',
-      key: 'userId',
+      key: 'userName',
       align: 'center',
       width: '120px',
     },
     {
       title: '用户昵称',
       dataIndex: 'nickName',
-      key: 'userId',
+      key: 'nickName',
       align: 'center',
       width: '150px',
     },
     {
       title: '区域',
       dataIndex: ['dept', 'deptName'],
-      key: 'userId',
+      key: 'deptName',
       align: 'center',
       width: '120px',
     },
     {
       title: '手机号码',
       dataIndex: 'phonenumber',
-      key: 'userId',
+      key: 'phonenumber',
       align: 'center',
       width: '120px',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'userId',
+      key: 'status',
       align: 'center',
       width: '80px',
-      render: (_, record) => (
+      render: (_: any, record: userType) => (
         <div>
           <Switch
             checked={record.status === '0'}
@@ -329,7 +342,7 @@ const User: React.FC = () => {
               if (record.userName === 'admin') {
                 message.warn('超级管理员不可停用')
               } else {
-                onUserStaChange(record.status, record.userId)
+                onUserStaChange(record.status as string, record.userId as number)
               }
             }}
           />
@@ -339,22 +352,22 @@ const User: React.FC = () => {
     {
       title: '创建时间',
       dataIndex: 'createdAt',
-      key: 'userId',
+      key: 'createdAt',
       align: 'center',
       width: '160px',
     },
     {
       title: '操作',
-      key: 'userId',
+      key: 'operation',
       align: 'center',
       width: '220px',
       fixed: 'right',
-      render: (record) => (
+      render: (record: userType) => (
         <div hidden={userInfo.userId === record.userId}>
           <Button
             onClick={() => {
               setIsModalOpen(true)
-              getUserListFn(record.userId)
+              getUserListFn(record.userId as number)
             }}
             size="small"
             icon={<EditOutlined />}
@@ -393,7 +406,8 @@ const User: React.FC = () => {
         </div>
       ),
     },
-  ]
+  ].filter((item) => !targetKeys.some((key) => item.key === key)) as ColumnsType<DataType>
+
   // 获取用户数据
   const getUserListFn = async (userId: number | string) => {
     const { data } = await getUserInfoAPI(userId)
@@ -458,6 +472,7 @@ const User: React.FC = () => {
       <Col span={20}>
         <Form
           form={queryForm}
+          hidden={!searchShow}
           layout="inline"
           name={'query'}
           initialValues={{ remember: true }}
@@ -544,7 +559,13 @@ const User: React.FC = () => {
                 </ColorBtn>
               </Col>
               <Col>
-                <ColorBtn color="warning" icon={<VerticalAlignBottomOutlined />}>
+                <ColorBtn
+                  color="warning"
+                  icon={<VerticalAlignBottomOutlined />}
+                  onClick={() => {
+                    exportExcelaFn()
+                  }}
+                >
                   导出
                 </ColorBtn>
               </Col>
@@ -553,18 +574,36 @@ const User: React.FC = () => {
           <Col span={8}>
             <Row gutter={8} justify="end">
               <Col>
-                <Tooltip placement="top" title="隐藏搜索">
-                  <Button shape="circle" icon={<SearchOutlined />} />
+                <Tooltip placement="top" title={searchShow ? '隐藏搜索' : '显示搜索'}>
+                  <Button
+                    shape="circle"
+                    icon={<SearchOutlined />}
+                    onClick={() => {
+                      setSearchShow(!searchShow)
+                    }}
+                  />
                 </Tooltip>
               </Col>
               <Col>
                 <Tooltip placement="top" title="刷新">
-                  <Button shape="circle" icon={<SyncOutlined />} />
+                  <Button
+                    shape="circle"
+                    icon={<SyncOutlined />}
+                    onClick={() => {
+                      searchQueryFn()
+                    }}
+                  />
                 </Tooltip>
               </Col>
               <Col>
                 <Tooltip placement="top" title="显隐列">
-                  <Button shape="circle" icon={<AppstoreFilled />} />
+                  <Button
+                    shape="circle"
+                    icon={<AppstoreFilled />}
+                    onClick={() => {
+                      setShowHiddenOpen(true)
+                    }}
+                  />
                 </Tooltip>
               </Col>
             </Row>
@@ -579,6 +618,7 @@ const User: React.FC = () => {
             rowKey="userId"
             size="middle"
             scroll={{ x: 'max-content' }}
+            loading={loading}
           />
           <Pagination
             className={classes['pagination']}
@@ -624,6 +664,18 @@ const User: React.FC = () => {
           }}
           onSubmit={() => {
             getUserList()
+          }}
+        />
+
+        <ShowHiddleColumn
+          showHiddenOpen={showHiddenOpen}
+          columns={columns}
+          onSubmit={(keys) => {
+            setTargetKeys(keys as string[])
+            setShowHiddenOpen(false)
+          }}
+          onCancel={() => {
+            setShowHiddenOpen(false)
           }}
         />
       </Col>
