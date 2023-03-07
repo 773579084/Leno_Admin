@@ -92,4 +92,33 @@ export const http = <T>(method: Method, url: string, submitData?: unknown) => {
   })
 }
 
+// 同用下载方法
+export function download(url: string, fileName: string, params?: object) {
+  return instance
+    .post(url, params, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      responseType: 'blob',
+    })
+    .then(async (res: any) => {
+      let uploadExcel = (fileName: any) => {
+        const blob = new Blob([res.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+        }) as any
+        const url = URL.createObjectURL(blob)
+        const aLink = document.createElement('a')
+        aLink.setAttribute('download', fileName)
+        aLink.setAttribute('href', url)
+        document.body.appendChild(aLink)
+        aLink.click()
+        document.body.removeChild(aLink)
+        URL.revokeObjectURL(blob)
+      }
+      uploadExcel(`${fileName}_${new Date().valueOf()}.xlsx`)
+    })
+    .catch((r) => {
+      console.error(r)
+      message.error('下载文件出现错误，请联系管理员！')
+    })
+}
+
 export default instance

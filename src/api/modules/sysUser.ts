@@ -52,8 +52,3 @@ export const putUserAPI = (data: userType) => {
 export const putUserStatusAPI = (data: { status: string; userId: number }) => {
   return http<IgetAddUserAPI>('PUT', '/system/user/profile', data)
 }
-
-// 导出用户列表
-export const exportUserListAPI = () => {
-  return http<IgetUserListAPI>('GET', '/system/user/export')
-}

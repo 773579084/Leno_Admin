@@ -41,6 +41,7 @@ import {
   getUserInfoAPI,
   putUserStatusAPI,
 } from '@/api/modules/sysUser'
+import { download } from '@/api'
 import classes from './index.module.scss'
 import { DataType, userType, getAddUserResult, userQueryType } from '@/type'
 const { RangePicker } = DatePicker
@@ -140,7 +141,9 @@ const User: React.FC = () => {
   }
 
   // 导出excel
-  const exportExcelaFn = () => {}
+  const exportExcelaFn = async () => {
+    download('/system/user/export', 'sys_user')
+  }
 
   // row-select
   const rowSelection = {
