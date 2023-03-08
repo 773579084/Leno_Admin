@@ -1,150 +1,24 @@
-// 正常状态
-.primary-color-normal {
-  :global {
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #1890ff;
-      background: #e8f4ff;
-      border-color: #a3d3ff;
-    }
-    .ant-btn-default:hover {
-      background: #1890ff;
-      color: white;
-    }
-  }
+$color-class:'primary-normal' 'primary-disabled' 'success-normal' 'success-disabled' 'danger-normal' 'danger-disabled' 'info-normal' 'info-disabled' 'warning-normal' 'warning-disabled';
+$btn-color:#1890ff #1890ffa6 #13ce66 #71e2a3 #f88182 #ff9292 #909399 #bcbec2 #ffba00 #f0c78a;
+$btn-color-hoover:white #1890ffa6 white #71e2a3 white #ff9292 white #bcbec2 white #f0c78a;
+$btn-backgroud:#e8f4ff #e8f4ff #f0f9eb #f0f9eb #ffeded #ffeded #f4f4f5 #f4f4f5 #fff8e6 #fdf6ec;
+$btn-backgroud-hover:#1890ff #e8f4ff #71e2a3 #e7faf0 #ff4949 #ffeded #909399 #f4f4f5 #ffba00 #fdf6ec;
+$btn-border-color:#a3d3ff #c4e3ff #a1ebc2 #d0f5e0 #ffb6b6 #ffdbdb #d3d4d6 #d3d4d6 #ffe399 #faecd8;
 
-}
-// 禁用状态
-.primary-color-disabled {
-  :global {
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #1890ffa6;
-      background: #e8f4ff;
-      border-color: #c4e3ff;
-    }
-    .ant-btn-default:hover{
-      color: #1890ffa6;
-      background: #e8f4ff;
-    }
-  }
-}
-
-
-.success-color-btn {
-  :global {
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #13ce66;
-      background-color: #e7faf0;
-      border-color: #a1ebc2;
-    }
-    .ant-btn-default:hover{
-      background: #71e2a3;
-      color: white;
+@each $class,$color,$colorHover,$background,$backgroundHover,$boder in zip($color-class,$btn-color,$btn-color-hoover,$btn-backgroud,$btn-backgroud-hover,$btn-border-color,) {
+  .color-#{$class} {
+    :global {
+      .ant-btn-default{
+        border-radius: 5px;
+        color: $color;
+        background: $background;
+        border-color: $boder;
+      }
+      .ant-btn-default:hover {
+        background: $backgroundHover;
+        color: $colorHover;
+      }
     }
   }
-}
-.success-color-disabled {
-  :global {
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #71e2a3;
-      background-color: #e7faf0;
-      border-color: #d0f5e0;
-    }
-    .ant-btn-default:hover{
-      color: #71e2a3;
-      background-color: #e7faf0;
-    }
-  }
-}
-
-.danger-color-btn {
-  :global{
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #ff4949;
-      background-color: #ffeded;
-      border-color: #ffb6b6;
-    }
-    .ant-btn-default:hover {
-      background: #ff4949;
-      color: white;
-    }
-  }
-}
-.danger-color-disabled {
-  :global{
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #ff9292;
-      background-color: #ffeded;
-      border-color: #ffdbdb;
-    }
-    .ant-btn-default:hover {
-      color: #ff9292;
-      background-color: #ffeded;
-    }
-  }
-}
-
-.info-color-btn {
-  :global{
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #909399;
-      background: #f4f4f5;
-      border-color: #d3d4d6;
-    }
-    .ant-btn-default:hover {
-      border-radius: 5px;
-      background: #909399;
-      color: white;
-    }
-  }
-}
-.info-color-disabled {
-  :global{
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #bcbec2;
-      background: #f4f4f5;
-      border-color: #e9e9eb;
-    }
-    .ant-btn-default:hover {
-      color: #bcbec2;
-      background: #f4f4f5;
-    }
-  }
-}
-
-.warning-color-btn {
-  :global{
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #ffba00;
-      background: #fff8e6;
-      border-color: #ffe399;
-    }
-    .ant-btn-default:hover {
-      background: #ffba00;
-      color: white;
-    }
-  }
-}
-.warning-color-disabled {
-  :global{
-    .ant-btn-default{
-      border-radius: 5px;
-      color: #f0c78a;
-      background: #fdf6ec;
-      border-color: #faecd8;
-    }
-    .ant-btn-default:hover {
-      color: #f0c78a;
-      background: #fdf6ec;
-    }
-  }
-}
+};
 
